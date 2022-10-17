@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import {motion} from "framer-motion";
+import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase-config";
 
 const Container = styled.div`
     display: grid;
@@ -97,14 +100,33 @@ const Button = styled(motion.button)`
     }
 `;
 const LogIn = () => {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log(user);
+            // ...
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+        });
+    }
+
     return (
         <Container>
             <Crate>
-                <Form>
+                <Form onSubmit={handleSubmit}>
                     <Title>Sign In</Title>
-                    <Input type="text" placeholder="Username" />
-                    <Input type="password" placeholder="Password" />
-                    <Button>LOGIN</Button>
+                    <Input type="text" placeholder="Username" onChange={(e) => setEmail(e.target.value)} />
+                    <Input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+                    <Button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>Sign In</Button>
                 </Form>
                 <Image 
                     src="https://i.ibb.co/wJpbGzW/johannes-plenio-fm-Tde1-Fe23-A-unsplash-1.jpg" 
