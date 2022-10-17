@@ -30,10 +30,10 @@ interface PropsF {
     color: string,
     content: {
         title: string,
-        options: [{
+        options: {
             name: string,
             subOptions: string[],
-        }]
+        }[]
     }
     setColorTheme: (colorTheme: string) => void,
 }
