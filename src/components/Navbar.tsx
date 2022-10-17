@@ -14,6 +14,7 @@ const Container = styled.div<Props>`
     min-height: 100vh;
     width:4vw;
     background-color: ${props => props.color};
+    z-index: 2;
 `;
 const Icon = styled.div`
     display: flex;
@@ -22,7 +23,7 @@ const Icon = styled.div`
     border-radius: 50%;
     padding: 0.85rem;
     cursor: pointer;
-    opacity: 0.8;
+    opacity: 0.5;
     transition: all 0.4s ease-in-out;
     &:hover {
         background-color: rgba(255, 255, 255, 0.1);
@@ -35,7 +36,7 @@ const Logo = styled.div`
     align-items: flex-start;
     width: 100%;
     flex: 1;
-    margin-top: 1rem;
+    margin: 2rem 0;
 `;
 const IconsCrate = styled.div`
     display: flex;
@@ -57,12 +58,10 @@ const Navbar = ( {  color }: Props ) => {
     return (
         <Container color={color}>
             <Logo>
-                <Icon>
                     <svg width="24" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M24 8.88887L14 4V5.46663L22.5 9.62219L14 13.7777V26L24 21.1111V8.88887Z" fill="white"/>
                         <path d="M0 17.1111L10 22V20.5334L1.49996 16.3778L10 12.2222V-7.62939e-06L0 4.88887V17.1111Z" fill="white"/>
                     </svg>
-                </Icon>
             </Logo>
             <IconsCrate>
                 <Icon>

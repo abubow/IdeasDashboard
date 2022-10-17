@@ -26,12 +26,22 @@ const Dashboard = (props: PropsF) => {
         navbar: '#1C1D22',
         options: '#222327',
     }
+    const OptionsContent = {
+        title: 'Ideas Panel',
+        options: [
+            {
+                    name: 'Ideas',
+                    subOptions: ['All Ideas', 'New Idea', 'Edit Idea', 'Delete Idea'],
+            }
+            ],
+    }
+
     const [colorTheme, setColorTheme] = useState('dark');
     return (
         <Container color={colorTheme === 'light' ? "#fff" : colors.backgroundColor}>
             <Navbar color={colors.navbar} />
-            <Options colorTheme={colorTheme} setColorTheme={setColorTheme} color={colors.options} />
-            <DisplayPanel color={colors.backgroundColor} />
+            <Options colorTheme={colorTheme} setColorTheme={setColorTheme} color={colors.options} content={OptionsContent} />
+            <DisplayPanel color={colors.backgroundColor} colorTheme={colorTheme} />
         </Container>
     );
 }
