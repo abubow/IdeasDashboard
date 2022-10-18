@@ -45,7 +45,7 @@ const Dashboard = (props: PropsF) => {
         <Container color={colorTheme === 'light' ? "#fff" : colors.backgroundColor}>
             <Navbar color={colors.navbar} />
             <Options colorTheme={colorTheme} setColorTheme={setColorTheme} color={colors.options} content={OptionsContent} />
-            <DisplayPanel color={colors.backgroundColor} colorTheme={colorTheme} />
+            <DisplayPanel colorTheme={colorTheme} />
         </Container>
     );
 }

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
+import Timeline from "./Timeline";
 
 interface Props {
-    color: string;
     colorTheme: string;
 }
 const Container = styled.div<Props>`
@@ -10,8 +10,9 @@ const Container = styled.div<Props>`
     top: 0;
     left: 24vw;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    flex-direction: column;
     min-height: 100vh;
     transition: all 0.5s ease;
     background-color: ${props => props.colorTheme === 'light' ? '#fff' : props.color};
@@ -20,14 +21,25 @@ const Container = styled.div<Props>`
     flex: 10;
 `;
 
+const Title = styled.div<Props>`
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: ${props => props.colorTheme === 'light' ? '#000' : '#fff'};
+    padding-left: 1vw;
+    margin-top: 1vh;
+    width: 100%;
+    margin: 4vh 0 5vh 1vw;
+`;
 interface PropsF {
-    color: string,
     colorTheme: string,
 }
-const DisplayPanel = ( { color, colorTheme }: PropsF ) => {
+const DisplayPanel = ( {  colorTheme }: PropsF ) => {
     return (
-        <Container color={color} colorTheme={colorTheme}>
-            <h1>Display Panel</h1>
+        <Container colorTheme={colorTheme}>
+            <Title colorTheme={colorTheme}>
+                Welcome Back, Abuzar👋
+            </Title>
+            <Timeline colorTheme={colorTheme} />
         </Container>
     );
 }
