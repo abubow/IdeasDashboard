@@ -33,6 +33,10 @@ const Dashboard = (props: PropsF) => {
                     name: 'Projects',
                     subOptions: ['All Projects', 'New Idea', 'Initial Stage', 'Done'],
             },
+            {
+                    name: 'Aproved',
+                    subOptions: [],
+            }
             ],
     }
 
