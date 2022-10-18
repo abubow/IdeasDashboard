@@ -30,9 +30,9 @@ const Dashboard = (props: PropsF) => {
         title: 'Ideas Panel',
         options: [
             {
-                    name: 'Ideas',
-                    subOptions: ['All Ideas', 'New Idea', 'Edit Idea', 'Delete Idea'],
-            }
+                    name: 'Projects',
+                    subOptions: ['All Projects', 'New Idea', 'Initial Stage', 'Done'],
+            },
             ],
     }
 
