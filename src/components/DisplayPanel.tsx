@@ -6,19 +6,19 @@ interface Props {
     colorTheme: string;
 }
 const Container = styled.div<Props>`
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 24vw;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     flex-direction: column;
-    min-height: 100vh;
     transition: all 0.5s ease;
     background-color: ${props => props.colorTheme === 'light' ? '#fff' : props.color};
     color: ${props => props.colorTheme === 'light' ? '#000' : '#fff'};
     width: 76vw;
     flex: 10;
+    height: 100%; 
 `;
 
 const Title = styled.div<Props>`

@@ -1,10 +1,33 @@
 import styled from "styled-components";
 import TimelineBar from "./TimelineBar";
 const Container = styled.div`
+    position: relative;
     display: flex;
     justify-content: center;
-    align-items: space-evenly;
-    width: 95%;
+    gap: 1%;
+    width: 100%;
+    min-width: 90%;
+    overflow: auto;
+    &::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+        -webkit-border-radius: 10%;
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    &::-webkit-scrollbar
+    {
+        width: 6px;
+        background-color: rgba(255, 255, 255, 0.05);
+        -webkit-border-radius: 10%;
+    }
+
+    &::-webkit-scrollbar-thumb
+    {
+        background-color: rgba(0, 0, 0, 0.2);
+        -webkit-border-radius: 10%;
+
+    }
 `;
 
 interface Props {
@@ -30,6 +53,12 @@ const Timeline = ({colorTheme}: Props) => {
                 {
                     title: 'Idea 3',
                     done: false,
+                    attachments: 0,
+                    comments: 0
+                },
+                {
+                    title: 'Idea 4',
+                    done: true,
                     attachments: 0,
                     comments: 0
                 },
@@ -123,7 +152,9 @@ const Timeline = ({colorTheme}: Props) => {
             {
                 TimelineBars.map((bar, index) => {
                     return (
-                        <TimelineBar colorTheme={colorTheme} title={bar.title} ideas={bar.ideas} key={index} />
+                        <div>
+                            <TimelineBar colorTheme={colorTheme} title={bar.title} ideas={bar.ideas} key={index}/>
+                        </div>
                     )
                 })
             }

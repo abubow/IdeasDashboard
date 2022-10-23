@@ -7,13 +7,14 @@ const Container = styled.div<Props>`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    background-color: ${props => props.colorTheme === 'light' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+    background-color: ${props => props.colorTheme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.02)'};
     backdrop-filter: blur(10px);
     width: 15vw;
-    margin: 1vh 1vw;
+    margin: 0.8vh 1vw;
     padding: 1vh 1vw;
     border-radius: 10px;
     min-height: 15vh;
+    cursor: move;
 `;
 const Crate = styled.div`
     display: flex;
@@ -56,10 +57,10 @@ const Attachments = styled.div`
     align-items: center;
 `;
 const CommentCount = styled.div<Props>`
-font-size: 0.8rem;
-font-weight: 400;
-color: ${props => props.colorTheme === 'light' ? '#000' : '#fff'};
-padding: 0 1vw;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: ${props => props.colorTheme === 'light' ? '#000' : '#fff'};
+    padding: 0 1vw;
 `;
 const Comments = styled.div`
     display: flex;
@@ -77,7 +78,7 @@ interface FProps {
 }
 const Mini_Idea = ({colorTheme, idea}: FProps) => {
     return (
-        <Container colorTheme={colorTheme}>
+        <Container colorTheme={colorTheme} draggable="true" className={"dragable"}>
             <Crate>
                 <StatusBall status={idea.done} />
                 <Title colorTheme={colorTheme}>{idea.title}</Title>
