@@ -10,22 +10,20 @@ const Container = styled.div`
     overflow: auto;
     &::-webkit-scrollbar-track
     {
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
-        -webkit-border-radius: 10%;
-        background-color: rgba(255, 255, 255, 0.05);
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.9);
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
     }
 
     &::-webkit-scrollbar
     {
-        width: 6px;
-        background-color: rgba(255, 255, 255, 0.05);
-        -webkit-border-radius: 10%;
+        width: 8px;
     }
 
     &::-webkit-scrollbar-thumb
     {
-        background-color: rgba(0, 0, 0, 0.2);
-        -webkit-border-radius: 10%;
+        background-color: rgba(0, 0, 0, 0.4);
+        -webkit-border-radius: 10px;
 
     }
 `;

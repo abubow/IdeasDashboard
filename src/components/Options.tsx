@@ -50,6 +50,9 @@ const Option = styled.div`
     width: 100%;
     justify-content: space-between;
     align-item: center;
+    &:hover {
+        cursor: pointer;
+    }
 `;
 const OptionLi = styled.li`
     width: 100%;
