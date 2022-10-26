@@ -77,12 +77,14 @@ const DisplayPanel = ( {  colorTheme }: PropsF ) => {
             <TopBar colorTheme={colorTheme}>
             <Title colorTheme={colorTheme}>
                 Welcome Back, {
-                    user?.displayName
+                    user?.displayName.split(' ')[0]
                 }👋
             </Title>
             <ProfileContainer colorTheme={colorTheme}>
                 <Username colorTheme={colorTheme}>
-                    Ramesh Sarwal
+                    {
+                        user?.displayName
+                    }
                 </Username>
                 <Profile src="https://avatars.githubusercontent.com/u/47056243?v=4" colorTheme={colorTheme}/>
             </ProfileContainer>

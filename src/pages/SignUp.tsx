@@ -15,6 +15,7 @@ const Container = styled.div`
 `;
 const Crate = styled.div`
     min-width: 80vw;
+    max-width: 85vw;
     min-height: 85vh;
     background-color: #1C1D22;
     border-radius: 12px;
@@ -106,6 +107,21 @@ const Button = styled(motion.button)`
         width: 100%;
     }
 `;
+const BottomText = styled.p`
+	font-size: 1rem;
+	font-weight: 400;
+	color: #fff;
+	margin-top: 0.8rem;
+	opacity: 0.8;
+`;
+const BottomLink = styled(Link)`
+	color: #fff;
+	font-weight: 500;
+	text-decoration: none;
+	&:hover {
+		text-decoration: underline;
+	}
+`;
 const dotCarousel = keyframes`
 	0% {
 		box-shadow: 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff;
@@ -167,12 +183,12 @@ const LogIn = () => {
             <Crate>
                 <Form onSubmit={handleSubmit}>
                     <Title>Sign Up</Title>
-                    <Input type="text" placeholder="email" onChange={(e) => setEmail(e.target.value)} />
-					<Input
+                    <Input
 						type="text"
-						placeholder="username"
+						placeholder="Full Name"
 						onChange={(e) => setUsername(e.target.value)}
 					/>
+                    <Input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
                     <Input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                     {
                         error && <ErrorText>{error}</ErrorText>
@@ -182,10 +198,13 @@ const LogIn = () => {
                                 loading ? <LoadingDots /> : "Sign Up"
                             }
                     </Button>
+                    <BottomText>
+                        Already have an account? <BottomLink to="/login">Log In</BottomLink>
+                    </BottomText>
                 </Form>
                 <Image 
-                    src="https://iili.io/D43Qdg.md.jpg" 
-                    alt="johannes-plenio-fm-Tde1-Fe23-A-unsplash-1"
+                    src="https://i.ibb.co/wJpbGzW/johannes-plenio-fm-Tde1-Fe23-A-unsplash-1.jpg" 
+                    alt="ideas background"
                     loading="lazy"
                 />
             </Crate>

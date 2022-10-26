@@ -14,6 +14,7 @@ const Container = styled.div`
 `;
 const Crate = styled.div`
 	min-width: 80vw;
+	max-width: 85vw;
 	min-height: 85vh;
 	background-color: #1c1d22;
 	border-radius: 12px;
@@ -105,6 +106,21 @@ const Button = styled(motion.button)`
 		width: 100%;
 	}
 `;
+const BottomText = styled.p`
+	font-size: 1rem;
+	font-weight: 400;
+	color: #fff;
+	margin-top: 0.8rem;
+	opacity: 0.8;
+`;
+const BottomLink = styled(Link)`
+	color: #fff;
+	font-weight: 500;
+	text-decoration: none;
+	&:hover {
+		text-decoration: underline;
+	}
+`;
 const dotCarousel = keyframes`
 	0% {
 		box-shadow: 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff;
@@ -179,10 +195,13 @@ const LogIn = () => {
 							loading ? <LoadingDots /> : "Sign In"
 						}
 					</Button>
+					<BottomText>
+						Don't have an account? <BottomLink to="/signup">Sign Up</BottomLink>
+					</BottomText>
 				</Form>
 				<Image
-					src="https://iili.io/D43Qdg.md.jpg"
-					alt="johannes-plenio-fm-Tde1-Fe23-A-unsplash-1"
+					src="https://i.ibb.co/wJpbGzW/johannes-plenio-fm-Tde1-Fe23-A-unsplash-1.jpg"
+					alt="Ideas Background"
 					loading="lazy"
 				/>
 			</Crate>
