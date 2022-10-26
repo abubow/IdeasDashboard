@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Options from '../components/Options';
 import { useState } from 'react';
 import DisplayPanel from '../components/DisplayPanel';
+import IdeaPopUp from '../components/IdeaPopUp';
 
 interface Props {
     color: string;

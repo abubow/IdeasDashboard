@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import Timeline from "./Timeline";
+import { useUserAuth } from "../contexts/authContext";
 
 interface Props {
     colorTheme: string;
@@ -70,11 +71,14 @@ interface PropsF {
     colorTheme: string,
 }
 const DisplayPanel = ( {  colorTheme }: PropsF ) => {
+    const { user } = useUserAuth();
     return (
         <Container colorTheme={colorTheme}>
             <TopBar colorTheme={colorTheme}>
             <Title colorTheme={colorTheme}>
-                Welcome Back, Ramesh👋
+                Welcome Back, {
+                    user?.displayName
+                }👋
             </Title>
             <ProfileContainer colorTheme={colorTheme}>
                 <Username colorTheme={colorTheme}>

@@ -1,15 +1,15 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { Auth, getAuth } from "firebase/auth";
 const firebaseConfig = {
-    apiKey: process.env.REACT_APP_APIKEY,
-    authDomain: process.env.REACT_APP_AUTHDOMAIN,
-    projectId: process.env.REACT_APP_PROJECTID,
-    storageBucket: process.env.REACT_APP_STORAGEBUCKET,
-    messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
-    appId: process.env.REACT_APP_APPID,
-    measurementId: process.env.REACT_APP_MEASUREMENTID
-  };
+  apiKey: "AIzaSyAdYw45Gtv9lne43b39qotorhB8fmL597M",
+  authDomain: "ideasdashboard-9b951.firebaseapp.com",
+  projectId: "ideasdashboard-9b951",
+  storageBucket: "ideasdashboard-9b951.appspot.com",
+  messagingSenderId: "487406122218",
+  appId: "1:487406122218:web:a97e47030a4be308ce9393",
+  measurementId: "G-1P22KBGD3Q"
+};
   
   // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  export const auth = getAuth(app);
+  export const app = initializeApp(firebaseConfig);
+  export const auth:Auth = getAuth(app);

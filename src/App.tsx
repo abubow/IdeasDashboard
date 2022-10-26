@@ -1,23 +1,35 @@
 import './App.css'
 import LogIn from './pages/LogIn';
+import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
-import { BrowserRouter as Router, Route} from 'react-router-dom';
+import { Route, Routes} from 'react-router-dom';
 import { useState } from 'react';
+import { UserAuthProvider } from './contexts/authContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App: React.FC = () => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   return (
     <div className="App">
-      {/* <Router>
-        <Route exact path="/">
-          <LogIn loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
-        </Route>
-        <Route path="/dashboard">
-          <Dashboard loggedIn={loggedIn} />
-        </Route>
-      </Router> */}
-      <Dashboard loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+        <UserAuthProvider>
+          <Routes>
+              <Route path="/" element={<LogIn />} />
+              <Route path="/login" element={
+                <ProtectedRoute destination="/home">
+                  <LogIn />
+                </ProtectedRoute>
+              } />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/home" element={
+                <ProtectedRoute destination="/">
+                  <Dashboard loggedIn={loggedIn} setLoggedIn={setLoggedIn}  />
+                </ProtectedRoute>
+              } />
+          </Routes>
+        </UserAuthProvider>
+      {/*Dashboard loggedIn={loggedIn} setLoggedIn={setLoggedIn} />*/}
+      {/* <LogIn /> */}
     </div>
   );
 }

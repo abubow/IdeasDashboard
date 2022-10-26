@@ -150,7 +150,7 @@ const Timeline = ({colorTheme}: Props) => {
             {
                 TimelineBars.map((bar, index) => {
                     return (
-                        <div>
+                        <div key={index}>
                             <TimelineBar colorTheme={colorTheme} title={bar.title} ideas={bar.ideas} key={index}/>
                         </div>
                     )
