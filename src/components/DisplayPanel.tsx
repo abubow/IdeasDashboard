@@ -71,7 +71,7 @@ interface PropsF {
     colorTheme: string,
 }
 const DisplayPanel = ( {  colorTheme }: PropsF ) => {
-    const { user } = useUserAuth();
+    const { user }:any = useUserAuth();
     return (
         <Container colorTheme={colorTheme}>
             <TopBar colorTheme={colorTheme}>

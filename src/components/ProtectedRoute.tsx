@@ -5,7 +5,7 @@ interface Props {
     destination: string,
 }
 const ProtectedRoute = ( { children, destination }: Props ) => {
-    const { user } = useUserAuth();
+    const { user }:any = useUserAuth();
     if ( user.email == undefined) {
         console.log("USER: " + user.displayName);
         return <Navigate to={destination}/>;
