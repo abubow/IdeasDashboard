@@ -176,7 +176,7 @@ const LogIn = () => {
 						whileTap={{ scale: 0.95 }}
 						type="submit">
 						{
-							!loading ? <LoadingDots /> : "Sign In"
+							loading ? <LoadingDots /> : "Sign In"
 						}
 					</Button>
 				</Form>
