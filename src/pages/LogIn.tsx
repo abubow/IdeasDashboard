@@ -178,7 +178,7 @@ const LogIn = () => {
 					<Title>Sign In</Title>
 					<Input
 						type="text"
-						placeholder="email"
+						placeholder="Email"
 						onChange={(e) => setEmail(e.target.value)}
 					/>
 					<Input
