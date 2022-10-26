@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useUserAuth } from "../contexts/authContext";
+import useUserAuth  from "../contexts/authContext";
 
 interface Props {
 	color: string;

@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useUserAuth } from "../contexts/authContext";
+import useUserAuth from "../contexts/authContext";
 interface Props {
     children: JSX.Element,
     destination: string,

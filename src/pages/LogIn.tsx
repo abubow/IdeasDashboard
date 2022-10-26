@@ -4,7 +4,7 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { Link, useNavigate } from "react-router-dom";
-import { useUserAuth } from "../contexts/authContext";
+import useUserAuth from "../contexts/authContext";
 const Container = styled.div`
 	display: grid;
 	place-items: center;

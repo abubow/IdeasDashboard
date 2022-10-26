@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import Timeline from "./Timeline";
-import { useUserAuth } from "../contexts/authContext";
+import useUserAuth from "../contexts/authContext";
 
 interface Props {
     colorTheme: string;

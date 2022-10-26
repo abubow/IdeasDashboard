@@ -39,6 +39,6 @@ export function UserAuthProvider({ children }: Props) {
     );
 }
 
-export function useUserAuth() {
+export default function useUserAuth() {
   return useContext(userAuthContext);
 }
