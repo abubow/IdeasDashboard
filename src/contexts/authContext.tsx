@@ -24,11 +24,6 @@ export function UserAuthProvider({ children }: Props) {
     function signUp(email: string, password: string) {
         return createUserWithEmailAndPassword(auth, email, password);
     }
-    function updateName(name: string) {
-        if (auth.currentUser) {
-            return updateProfile(auth.currentUser, { displayName: name });
-        }
-    }
     onAuthStateChanged(auth, (userC) => {
                     console.log("AuthUSER: " + userC);
                     if (userC) {
@@ -38,7 +33,7 @@ export function UserAuthProvider({ children }: Props) {
                     }
                 })
     return (
-        <userAuthContext.Provider value={{ signUp, logIn, logOut, updateName, user }}>
+        <userAuthContext.Provider value={{ signUp, logIn, logOut, user }}>
             {children}
         </userAuthContext.Provider>
     );
