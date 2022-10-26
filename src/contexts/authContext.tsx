@@ -8,7 +8,7 @@ import {
     onAuthStateChanged
 } from "firebase/auth";
 import { auth } from "../firebase-config";
-const userAuthContext = createContext({});
+export const userAuthContext = createContext({});
 
 type Props = {
     children: JSX.Element,

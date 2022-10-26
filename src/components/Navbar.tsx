@@ -58,7 +58,7 @@ const LogOutCrate = styled.div`
 	flex-direction: column;
 `;
 const Navbar = ({ color }: Props) => {
-	const {logOut} = useUserAuth();
+	const {logOut}:any = useUserAuth();
 	const navigate = useNavigate();
 	const handleLogOut = () => {
 		logOut();
