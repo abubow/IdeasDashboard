@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import Timeline from "./Timeline";
 import useUserAuth from "../contexts/authContext";
+import AllIdeas from "./AllIdeas";
 
 interface Props {
     colorTheme: string;
@@ -89,7 +90,7 @@ const DisplayPanel = ( {  colorTheme }: PropsF ) => {
                 <Profile src="https://avatars.githubusercontent.com/u/47056243?v=4" colorTheme={colorTheme}/>
             </ProfileContainer>
             </TopBar>
-            <Timeline colorTheme={colorTheme} />
+            <AllIdeas colorTheme={colorTheme}/>
         </Container>
     );
 }

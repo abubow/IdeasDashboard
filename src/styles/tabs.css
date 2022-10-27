@@ -1,0 +1,41 @@
+.tabs{
+  margin-left: 3vw;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(75, 75, 75, 0.01 ) !important;
+  }
+.tab{
+  width: 90%;
+  min-height: 50vh;
+  background-color: rgba(75, 75, 75, 0.1);
+  border-radius: 0px 15px 15px 15px;
+  padding: 1vw;
+}
+  .tabs-titles{
+    list-style: none;
+    padding: 0px;
+    margin: 0;
+  }
+  
+  .tab-title{
+    display: inline-block;
+    padding: 10px 20px;
+    opacity: 0.5;
+    color: #c7c6c2;
+    cursor: pointer;
+    margin-left:1px;
+    background-color: rgba(0, 0, 0, 0.01);
+    border-radius: 5px 5px 0px 0px;
+  }
+  
+  .tab-title--active {
+    background-color:rgba(75, 75, 75, 0.1);
+    opacity: 1;
+    color: white;
+  }
+  
+  .tab-content{
+    background-color: rgba(75, 75, 75, 0.1)
+    padding: 5px;
+    margin: 0;
+  }

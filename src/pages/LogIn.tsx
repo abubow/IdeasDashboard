@@ -179,11 +179,13 @@ const LogIn = () => {
 					<Input
 						type="text"
 						placeholder="Email"
+						required
 						onChange={(e) => setEmail(e.target.value)}
 					/>
 					<Input
 						type="password"
 						placeholder="Password"
+						required
 						onChange={(e) => setPassword(e.target.value)}
 					/>
 					{error ? <ErrorText>{error}</ErrorText> : null}

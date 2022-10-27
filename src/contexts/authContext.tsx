@@ -24,14 +24,17 @@ export function UserAuthProvider({ children }: Props) {
     function signUp(email: string, password: string) {
         return createUserWithEmailAndPassword(auth, email, password);
     }
-    onAuthStateChanged(auth, (userC) => {
-                    console.log("AuthUSER: " + userC);
-                    if (userC) {
-                        setUser(userC);
-                    } else {
-                        setUser({});
-                    }
-                })
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (userC) => {
+                        console.log("AuthUSER: " + userC);
+                        if (userC) {
+                            setUser(userC);
+                        } else {
+                            setUser({});
+                        }
+                    })
+        return unsubscribe;
+    }, []);
     return (
         <userAuthContext.Provider value={{ signUp, logIn, logOut, user }}>
             {children}

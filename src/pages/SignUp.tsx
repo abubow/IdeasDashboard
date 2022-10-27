@@ -186,10 +186,11 @@ const LogIn = () => {
                     <Input
 						type="text"
 						placeholder="Full Name"
+                        required
 						onChange={(e) => setUsername(e.target.value)}
 					/>
-                    <Input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-                    <Input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+                    <Input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
+                    <Input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
                     {
                         error && <ErrorText>{error}</ErrorText>
                     }

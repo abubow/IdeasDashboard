@@ -4,6 +4,7 @@ import Options from '../components/Options';
 import { useState } from 'react';
 import DisplayPanel from '../components/DisplayPanel';
 import IdeaPopUp from '../components/IdeaPopUp';
+import { OptionsSelectedProvider } from '../contexts/optionsContext';
 
 interface Props {
     color: string;
@@ -45,8 +46,12 @@ const Dashboard = (props: PropsF) => {
     return (
         <Container color={colorTheme === 'light' ? "#fff" : colors.backgroundColor}>
             <Navbar color={colors.navbar} />
-            <Options colorTheme={colorTheme} setColorTheme={setColorTheme} color={colors.options} content={OptionsContent} />
-            <DisplayPanel colorTheme={colorTheme} />
+            <OptionsSelectedProvider>
+                <>
+                    <Options colorTheme={colorTheme} setColorTheme={setColorTheme} color={colors.options} content={OptionsContent} />
+                    <DisplayPanel colorTheme={colorTheme} />
+                </>
+            </OptionsSelectedProvider>
         </Container>
     );
 }
