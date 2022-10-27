@@ -3,6 +3,7 @@ import { useState } from "react";
 import Timeline from "./Timeline";
 import useUserAuth from "../contexts/authContext";
 import AllIdeas from "./AllIdeas";
+import useOptionSelected from "../contexts/optionsContext";
 
 interface Props {
     colorTheme: string;
@@ -73,6 +74,7 @@ interface PropsF {
 }
 const DisplayPanel = ( {  colorTheme }: PropsF ) => {
     const { user }:any = useUserAuth();
+    const { optionSelected }:any = useOptionSelected();
     return (
         <Container colorTheme={colorTheme}>
             <TopBar colorTheme={colorTheme}>
@@ -90,7 +92,9 @@ const DisplayPanel = ( {  colorTheme }: PropsF ) => {
                 <Profile src="https://avatars.githubusercontent.com/u/47056243?v=4" colorTheme={colorTheme}/>
             </ProfileContainer>
             </TopBar>
-            <AllIdeas colorTheme={colorTheme}/>
+            {
+                optionSelected === 'Projects' ? <Timeline colorTheme={colorTheme}/> : <AllIdeas colorTheme={colorTheme}/>
+            }
         </Container>
     );
 }

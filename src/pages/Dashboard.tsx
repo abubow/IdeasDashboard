@@ -36,7 +36,7 @@ const Dashboard = (props: PropsF) => {
                     subOptions: ['All Projects', 'New Idea', 'Initial Stage', 'Done'],
             },
             {
-                    name: 'Aproved',
+                    name: 'Approved',
                     subOptions: [],
             }
             ],

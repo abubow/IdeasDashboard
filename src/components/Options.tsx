@@ -132,7 +132,9 @@ const Options = ( { colorTheme, setColorTheme, content, color }: PropsF ) => {
                         <UnorderedList>
                             <OptionLi key={index}
                                     onClick={
+                                        () => {
                                         setOptionSelected(option.name)
+                                        }
                                     }
                                 style={{ 
                                     opacity: optionSelected === option.name ? 1 : 0.5,  
@@ -149,8 +151,15 @@ const Options = ( { colorTheme, setColorTheme, content, color }: PropsF ) => {
                             <SubOptions>
                                     {option.subOptions.map((subOption, index) => {
                                         return (
-                                            <OptionLi key={index}>
-                                                {subOption}
+                                            <OptionLi key={index}
+                                                onClick={
+                                                    () => {
+                                                    setOptionSelected(subOption)
+                                                    }
+                                                }>
+                                                    <Option>
+                                                        {subOption}
+                                                    </Option>
                                             </OptionLi>
                                         );
                                     })}
