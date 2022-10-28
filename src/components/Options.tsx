@@ -45,6 +45,7 @@ const OptionsContent = styled.div`
     align-items: center;
     flex-direction: column;
     width: 100%;
+    margin-top: 3.5rem;
 `;
 const Option = styled.div`
     display: flex;
@@ -126,9 +127,7 @@ const Options = ( { colorTheme, setColorTheme, content, color }: PropsF ) => {
             </Heading>
             <OptionsContent>
                 {content.options.map((option, index) => {
-                    return (<>
-                        <Heading>
-                        </Heading>
+                    return (
                         <UnorderedList>
                             <OptionLi key={index}
                                     onClick={
@@ -164,7 +163,7 @@ const Options = ( { colorTheme, setColorTheme, content, color }: PropsF ) => {
                                         );
                                     })}
                             </SubOptions>
-                        </UnorderedList></>
+                        </UnorderedList>
                     );
                 })}
             </OptionsContent>

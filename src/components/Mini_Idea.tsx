@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import IdeaPopUp from './IdeaPopUp';
+import PopUp from './PopUp';
 
 interface Props {
     colorTheme: string;
@@ -118,10 +119,10 @@ const Mini_Idea = ({colorTheme, idea}: FProps) => {
                     </Comments>
                     </MetaContainer>
                 </Crate>
-            </Container>
-            {
-                    showPopUp ? <IdeaPopUp colorTheme={colorTheme} idea={ideaDetails} setIdea={setIdeaDetails} setShowPopUp={setShowPopUp}/> : null
-            }
+                </Container>
+                {
+                        showPopUp ? <PopUp colorTheme={colorTheme} ideaId={idea.title} setShowPopUp={setShowPopUp} /> : null
+                }
         </>
         
     )

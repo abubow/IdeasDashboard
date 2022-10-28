@@ -1,10 +1,24 @@
 import styled from "styled-components"
 import Tabs from "./Tabs";
+import TabsC from "./TabsC";
 
+const Container = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+`;
 interface Props {
     colorTheme: string;
 }
-const Container = styled.dialog<Props>`
+const Crate = styled.div<Props>`
     position: fixed;
     top: 50%;
     left: 50%;
@@ -14,18 +28,16 @@ const Container = styled.dialog<Props>`
     align-items: center;
     flex-direction: column;
     transition: all 0.5s ease;
-    background-color: ${props => props.colorTheme === 'light' ? 'rgba(255, 255, 255, 0.5' : 'rgba(0, 0, 0, 0.3)'};
+    background-color: ${props => props.colorTheme === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'};
     backdrop-filter: blur(25px);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     color: ${props => props.colorTheme === 'light' ? 'black' : 'white'};
     width: 76vw !important;
     height: 90vh !important;
     border-radius: 12px;
-    border: 1px solid ${props => props.colorTheme === 'light' ? 'rgba(255, 255, 255, 0.5' : 'rgba(0, 0, 0, 0.5)'};
-    outline: none;
-    z-index: 100;
+    border: 1px solid ${props => props.colorTheme === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'};
 `;
-const IdeaForm = styled.form`
+const IdeaForm = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -60,7 +72,7 @@ const Button = styled.button<Props>`
     color: ${props => props.colorTheme === 'light' ? 'black' : 'white'};
     border: none;
     outline: none;
-    background: #292B31;
+    background: ${props => props.colorTheme === 'light' ? 'white' : '#292B31'};
     border-radius: 8px;
     opacity: 0.8;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
@@ -68,21 +80,13 @@ const Button = styled.button<Props>`
 `;
 interface FPProps {
     colorTheme: string;
-    idea: {
-        title: string;
-        description: string;
-        ideaId: string
-    }
-    setIdea: React.Dispatch<React.SetStateAction<{
-        title: string;
-        description: string;
-        ideaId: string
-    }>>;
+    ideaId: string;
     setShowPopUp: React.Dispatch<React.SetStateAction<boolean>>;
     // setIdeaPopUp: (ideaPopUp: string) => void;
     // ideaPopUp: string;
 }
-const IdeaPopUp = ( {colorTheme, idea, setIdea, setShowPopUp}: FPProps ) => {
+const PopUp = ( {colorTheme, ideaId, setShowPopUp}: FPProps ) => {
+    
     const data = [
         {id : '1',
          tabTitle: "General",
@@ -94,33 +98,20 @@ const IdeaPopUp = ( {colorTheme, idea, setIdea, setShowPopUp}: FPProps ) => {
          tabTitle: "ROI",
         }
       ]
-    return (
-    <Container colorTheme={colorTheme}>
-        <IdeaForm onSubmit={(e) => e.preventDefault()}>
-            <Title colorTheme={colorTheme}>
-                {idea.title}
-            </Title>
+  return (
+    <Container>
+        <Crate colorTheme={colorTheme}>
+            <Title colorTheme={colorTheme}>Edit Idea</Title>
+            <IdeaForm>
+                <TabsC data={data} colorTheme={colorTheme}/>
+            </IdeaForm>
             <ButtonCrate>
-                <Button colorTheme={colorTheme} type="submit" onClick={
-                    (e)=>{
-                        e.preventDefault();
-                        console.log("submit")
-                    }
-                }>
-                    Submit
-                </Button>
-                <Button colorTheme={colorTheme} type="button" onClick={
-                    ()=>{
-                        setShowPopUp(false)
-                    }
-                }>
-                    Cancel
-                </Button>
-
+                <Button colorTheme={colorTheme}>Save</Button>
+                <Button colorTheme={colorTheme} onClick={() => setShowPopUp(false)}>Cancel</Button>
             </ButtonCrate>
-        </IdeaForm>
+        </Crate>
     </Container>
-    )
+  )
 }
 
-export default IdeaPopUp
+export default PopUp

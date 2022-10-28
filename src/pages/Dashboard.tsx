@@ -42,7 +42,7 @@ const Dashboard = (props: PropsF) => {
             ],
     }
 
-    const [colorTheme, setColorTheme] = useState('dark');
+    const [colorTheme, setColorTheme] = useState('light');
     return (
         <Container color={colorTheme === 'light' ? "#fff" : colors.backgroundColor}>
             <Navbar color={colors.navbar} />
