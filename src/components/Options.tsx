@@ -58,7 +58,9 @@ const Option = styled.div`
 `;
 const OptionLi = styled.li`
     width: 100%;
-`;
+    padding: 0.1rem 0;
+    transition: all 0.5s ease;
+    `;
 const SubOptions = styled.ul`
     list-style: none;
     margin: 0 0 0 1rem;
@@ -141,13 +143,16 @@ const Options = ( { colorTheme, setColorTheme, content, color }: PropsF ) => {
                                 }}>
                                 <Option>
                                     {option.name}
-                                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" style={{transform: optionSelected === option.name ? 'rotate(0deg)' : 'rotate(90deg)', transition: 'all 0.4s ease'}}>
                                         <path d="M9 1L5 5L1 1" stroke={colorTheme === 'light' ? '#000' : '#fff'} 
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                     </svg>
                                 </Option>
                             </OptionLi>
-                            <SubOptions>
+                            <SubOptions style={{opacity: optionSelected === option.name ? 0.5 : 0, 
+                                    maxHeight: optionSelected === option.name ? '100%' : '0',
+                                    overflow: 'hidden',
+                                    transition: 'all 0.4s ease'}}>
                                     {option.subOptions.map((subOption, index) => {
                                         return (
                                             <OptionLi key={index}

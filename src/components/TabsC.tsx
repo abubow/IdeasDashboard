@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { IdeaTypes } from "../constants/types";
+import parse from "html-react-parser";
 
 interface Props {
 	colorTheme: string;
@@ -48,50 +50,130 @@ const TabIdentifier = styled.button<TabProps>`
 const TabContent = styled.div<TabProps>`
     display: ${(props) => (props.selected ? "flex" : "none")};
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
+	flex-direction: column;
     width: 100%;
     height: 100%;
     background-color: ${(props) =>
         props.colorTheme === "light" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)"};
     color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
     padding: 1vh 1vw;
+    opacity: 0.9;
     border-radius: 0 0 0.5rem 0.5rem;
-    margin-top: 0.1vh;
-    transition: all 0.2s ease-out;
+    transition: all 0.3s ease-in;
     margin-top: 0;
+	max-height: 60vh;
+	overflow-y: auto;
 `;
-interface FProps {
-	data: {
-		id: string;
-		tabTitle: string;
-	}[];
-	colorTheme: string;
+const Description = styled.div<Props>`
+	font-size: 0.9rem;
+	font-weight: 400;
+	color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
+	text-align: justify;
+	max-height: 70vh;
+	padding: 1vh 2vw;
+	line-height: 1.2rem;
+`;
+const Pros = styled.ol<Props>`
+	margin: 0 2vw;
+`;
+const Cons = styled.ol<Props>`
+	margin: 0 2vw;
+`;
+const Li = styled.li<Props>`
+	font-size: 0.8rem;
+	font-weight: 400;
+	color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
+	margin: 0.5vh 1vw;
+`;
+interface FProps extends Props {
+	idea: IdeaTypes;
 }
-const TabsC = ({ data, colorTheme }: FProps) => {
-	const [tabSelected, setTabSelected] = useState(data[0].id);
+const TabsC = ({ idea, colorTheme }: FProps) => {
+	const Tabs = [
+		{
+			id: "1",
+			name: "General",
+		},
+		{
+			id: "2",
+			name: "Evaluation",
+		},
+		{
+			id: "3",
+			name: "Roi",
+		},
+	]
+	const [tabSelected, setTabSelected] = useState(Tabs[0].id);
+	
 	return (
 		<Container colorTheme={colorTheme}>
 			<TabIdentifierCrate>
-				{data.map((item) => (
+				{Tabs.map((item) => (
 					<TabIdentifier
 						key={item.id}
 						colorTheme={colorTheme}
 						selected={tabSelected === item.id}
                         onClick={() => setTabSelected(item.id)}
                         >
-						{item.tabTitle}
+						{item.name}
 					</TabIdentifier>
 				))}
                 
 			</TabIdentifierCrate>
             {
-                data.map((item) => (
+                Tabs.map((item) => (
                     <TabContent
                         key={item.id}
                         colorTheme={colorTheme}
                         selected={tabSelected === item.id}
                     >
-                        {item.tabTitle}
+                        {
+							item.id === "1" ? (
+								<>
+									<Description colorTheme={colorTheme}>
+										{
+											parse(idea.Description)
+										}
+									</Description>
+									<Pros colorTheme={colorTheme}>
+										<h2>Pros</h2>
+										{idea.Pros?.map((item) => (
+											<Li key={item} colorTheme={colorTheme}>
+												{item}
+											</Li>
+										))}
+									</Pros>
+									<Cons colorTheme={colorTheme}>
+										<h2>Cons</h2>
+										{idea.Cons?.map((item) => (
+											<Li key={item} colorTheme={colorTheme}>
+												{item}
+											</Li>
+										))}
+									</Cons>
+								</>
+							)
+							: item.id === "2" ? (
+								<>
+									<Description colorTheme={colorTheme}>
+										{
+											idea.Evaluation? parse(`
+										score: ${idea.Evaluation[0]}` + '<br/>'+ `
+										${idea.Evaluation[1]}
+										`) : "No evaluation yet"
+										}
+									</Description>
+								</>
+							)
+							: (
+								<>
+									<Description colorTheme={colorTheme}>
+										{idea.ROI? idea.ROI : "No ROI provided yet"}
+									</Description>
+								</>
+							)
+						}
                     </TabContent>
                 ))
             }

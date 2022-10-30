@@ -4,6 +4,7 @@ import Timeline from "./Timeline";
 import useUserAuth from "../contexts/authContext";
 import AllIdeas from "./AllIdeas";
 import useOptionSelected from "../contexts/optionsContext";
+import NewIdea from "./NewIdea";
 
 interface Props {
     colorTheme: string;
@@ -93,7 +94,9 @@ const DisplayPanel = ( {  colorTheme }: PropsF ) => {
             </ProfileContainer>
             </TopBar>
             {
-                optionSelected === 'Projects' ? <Timeline colorTheme={colorTheme}/> : <AllIdeas colorTheme={colorTheme}/>
+                optionSelected === 'Projects' ? <Timeline colorTheme={colorTheme}/> : 
+                optionSelected == 'New Idea' ? <NewIdea colorTheme={colorTheme}/> :
+                <AllIdeas colorTheme={colorTheme}/>
             }
         </Container>
     );

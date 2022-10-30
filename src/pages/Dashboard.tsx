@@ -5,6 +5,7 @@ import { useState } from 'react';
 import DisplayPanel from '../components/DisplayPanel';
 import IdeaPopUp from '../components/IdeaPopUp';
 import { OptionsSelectedProvider } from '../contexts/optionsContext';
+import { AllIdeasProvider } from '../contexts/ideasContext';
 
 interface Props {
     color: string;
@@ -49,7 +50,9 @@ const Dashboard = (props: PropsF) => {
             <OptionsSelectedProvider>
                 <>
                     <Options colorTheme={colorTheme} setColorTheme={setColorTheme} color={colors.options} content={OptionsContent} />
-                    <DisplayPanel colorTheme={colorTheme} />
+                    <AllIdeasProvider>
+                        <DisplayPanel colorTheme={colorTheme} />
+                    </AllIdeasProvider>
                 </>
             </OptionsSelectedProvider>
         </Container>
