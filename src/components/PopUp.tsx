@@ -1,7 +1,8 @@
 import styled from "styled-components"
 import Tabs from "./Tabs";
 import TabsC from "./TabsC";
-
+import { IdeaTypes } from "../constants/types";
+import { useState } from "react";
 const Container = styled.div`
     position: fixed;
     top: 0;
@@ -30,6 +31,7 @@ const Crate = styled.div<Props>`
     transition: all 0.5s ease;
     background-color: ${props => props.colorTheme === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'};
     backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(85px);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     color: ${props => props.colorTheme === 'light' ? 'black' : 'white'};
     width: 76vw !important;
@@ -52,8 +54,8 @@ const Title = styled.div<Props>`
     font-size: 1.7rem;
     font-weight: 600;
     color: ${props => props.colorTheme === 'light' ? '#000' : '#fff'};
-    padding-left: 1vw;
-    margin-top: 1vh;
+    padding-left: 3vw;
+    margin-top: 2vh;
     width: 100%;
     margin: 4vh 0 5vh 1vw;
 `;
@@ -63,8 +65,8 @@ const ButtonCrate = styled.div`
     align-items: center;
     width: 100%;
     height: 10vh;
-    gap: 1vw;
-    margin-right: 4vw;
+    gap: 0.5vw;
+    margin: 0 4vw 1vh 0;
 `;
 const Button = styled.button<Props>`
     width: 5rem;
@@ -80,30 +82,20 @@ const Button = styled.button<Props>`
 `;
 interface FPProps {
     colorTheme: string;
-    ideaId: string;
+    idea: IdeaTypes;
     setShowPopUp: React.Dispatch<React.SetStateAction<boolean>>;
     // setIdeaPopUp: (ideaPopUp: string) => void;
     // ideaPopUp: string;
 }
-const PopUp = ( {colorTheme, ideaId, setShowPopUp}: FPProps ) => {
-    
-    const data = [
-        {id : '1',
-         tabTitle: "General",
-        },
-        {id : '2',
-         tabTitle: "Evaluation",
-        },
-        {id : '3',
-         tabTitle: "ROI",
-        }
-      ]
+const PopUp = ( {colorTheme, idea, setShowPopUp}: FPProps ) => {
   return (
     <Container>
         <Crate colorTheme={colorTheme}>
-            <Title colorTheme={colorTheme}>Edit Idea</Title>
+            <Title colorTheme={colorTheme}>
+                {idea.Title}
+            </Title>
             <IdeaForm>
-                <TabsC data={data} colorTheme={colorTheme}/>
+                <TabsC idea={idea} colorTheme={colorTheme} />
             </IdeaForm>
             <ButtonCrate>
                 <Button colorTheme={colorTheme}>Save</Button>

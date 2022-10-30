@@ -110,7 +110,7 @@ const Navbar = ({ color }: Props) => {
 						/>
 					</svg>
 				</Icon>
-				<Icon>
+				{/* <Icon>
 					<svg
 						width="18"
 						height="19"
@@ -135,7 +135,7 @@ const Navbar = ({ color }: Props) => {
 							fill="white"
 						/>
 					</svg>
-				</Icon>
+				</Icon> */}
 				<Icon>
 					<svg
 						width="20"
@@ -185,8 +185,8 @@ const Navbar = ({ color }: Props) => {
 						fill="none"
 						xmlns="http://www.w3.org/2000/svg">
 						<path
-							fill-rule="evenodd"
-							clip-rule="evenodd"
+							fillRule="evenodd"
+							clipRule="evenodd"
 							d="M10.0833 18.3333C10.0833 17.8271 9.67293 17.4167 9.16667 17.4167H4.58333V4.58333H9.16667C9.67293 4.58333 10.0833 4.17293 10.0833 3.66667C10.0833 3.1604 9.67293 2.75 9.16667 2.75H4.58333C3.57081 2.75 2.75 3.57081 2.75 4.58333V17.4167C2.75 18.4292 3.57081 19.25 4.58333 19.25H9.16667C9.67293 19.25 10.0833 18.8396 10.0833 18.3333Z"
 							fill="white"
 						/>

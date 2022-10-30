@@ -1,4 +1,6 @@
+import { Key, useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAllIdeas } from "../contexts/ideasContext";
 import Mini_Idea from "./Mini_Idea";
 interface Props {
     colorTheme: string;
@@ -15,7 +17,7 @@ const Container = styled.div<Props>`
     border: ${props => props.colorTheme === 'light' ? '2px dashed rgb(28,29,34, 0.08)' : 'none'};
     border-radius: 10px;
     padding: 1vh 1vw;
-    overflow-y: scroll;
+    overflow-y: auto;
 `;
 const Title = styled.div<Props>`
     font-size: 0.8rem;
@@ -35,134 +37,20 @@ const IdeaContainer = styled.div`
     padding-left: 1vw;
 `;
 
-
+interface IdeaTypes {
+    AuthorId: string | null; Cons: string[] | null; Description: string; Evaluation: any[] | null; Pros: string[] | null; ROI: any[] | null; Stage: string; StageStatus: boolean; TeamId: string | null; Title: string; id: string; 
+}
 const AllIdeas = ({colorTheme}: Props) => {
-    const allIdeas = [
-        {
-            title: 'Idea 1',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        {
-            title: 'Idea 2',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        
-        {
-            title: 'Idea 3',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        {
-            title: 'Idea 4',
-            done: true,
-            attachments: 10,
-            comments: 8
-        },
-        
-        {
-            title: 'Idea 3',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        {
-            title: 'Idea 4',
-            done: true,
-            attachments: 10,
-            comments: 8
-        },
-        
-        {
-            title: 'Idea 3',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        {
-            title: 'Idea 4',
-            done: true,
-            attachments: 10,
-            comments: 8
-        },
-        
-        {
-            title: 'Idea 3',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        {
-            title: 'Idea 4',
-            done: true,
-            attachments: 10,
-            comments: 8
-        },
-        
-        {
-            title: 'Idea 5',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        {
-            title: 'Idea 6',
-            done: true,
-            attachments: 10,
-            comments: 8
-        },
-        
-        {
-            title: 'Idea 1',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        {
-            title: 'Idea 2',
-            done: true,
-            attachments: 10,
-            comments: 8
-        },
-        
-        {
-            title: 'Idea 1',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        {
-            title: 'Idea 2',
-            done: true,
-            attachments: 10,
-            comments: 8
-        },
-        
-        {
-            title: 'Idea 1',
-            done: false,
-            attachments: 0,
-            comments: 0
-        },
-        {
-            title: 'Idea 2',
-            done: true,
-            attachments: 10,
-            comments: 8
-        },
-    ]
+    const { allIdeas }: {allIdeas: [IdeaTypes]|null} = useAllIdeas();
     return (
         <Container colorTheme={colorTheme}>
             <Title colorTheme={colorTheme}>
-                All Ideas ({allIdeas.length})
+                All Ideas ({allIdeas? allIdeas.length : 0})
             </Title>
             <IdeaContainer>
                 {
-                    allIdeas.map((idea, index) => {
+                    allIdeas?.map((idea : IdeaTypes , index: Key | null | undefined) => {
+                        console.log(idea)
                         return (
                             <Mini_Idea colorTheme={colorTheme} idea={idea} key={index}/>
                         )
