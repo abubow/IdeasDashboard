@@ -28,7 +28,6 @@ export function AllIdeasProvider({ children }: Props) {
                 const ideas = await getDocs(ideasCollectionRef);
                 const ideaObj : any = ideas.docs.map((doc)=>{return {...doc.data(), id: doc.id}});
                 setAllIdeas(ideaObj);
-                console.log(ideaObj);
             }
             getIdeas();
         }, []

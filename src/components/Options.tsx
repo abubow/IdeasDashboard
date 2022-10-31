@@ -130,7 +130,7 @@ const Options = ( { colorTheme, setColorTheme, content, color }: PropsF ) => {
             <OptionsContent>
                 {content.options.map((option, index) => {
                     return (
-                        <UnorderedList>
+                        <UnorderedList key={index}>
                             <OptionLi key={index}
                                     onClick={
                                         () => {

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import TimelineBar from "./TimelineBar";
 import { useAllIdeas } from "../contexts/ideasContext";
 import { IdeaTypes } from "../constants/types";
+import { useEffect } from "react";
 const Container = styled.div`
 	position: relative;
 	display: flex;
@@ -45,6 +46,26 @@ const Timeline = ({ colorTheme }: Props) => {
 		},
 	];
     const allIdeas:any = useAllIdeas();
+	const ideas: IdeaTypes[][] = [[], [], [], []];
+	useEffect(
+		() => {
+			allIdeas.allIdeas?.forEach((idea: IdeaTypes) => {
+				if (idea.Stage === "Thought") {
+					ideas[0].push(idea);
+				} else if (idea.Stage === "Brainstormed") {
+					ideas[1].push(idea);
+				} else if (idea.Stage === "Evaluated") {
+					ideas[2].push(idea);
+					console.log(idea);
+				} else {
+					ideas[3].push(idea);
+				}
+			});
+		},
+		[allIdeas]
+	)
+
+
 	return (
 		<Container>
 			{TimelineBars.map((bar, index) => {
@@ -54,10 +75,8 @@ const Timeline = ({ colorTheme }: Props) => {
 							colorTheme={colorTheme}
 							title={bar.title}
 							ideas={
-                                allIdeas.filter((idea: IdeaTypes) => {
-                                    return idea.Stage === bar.title;
-                                }
-                            )}
+                                ideas[index]
+							}
 							key={index}
 						/>
 					</div>

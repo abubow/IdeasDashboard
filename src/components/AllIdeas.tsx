@@ -41,7 +41,7 @@ interface IdeaTypes {
     AuthorId: string | null; Cons: string[] | null; Description: string; Evaluation: any[] | null; Pros: string[] | null; ROI: any[] | null; Stage: string; StageStatus: boolean; TeamId: string | null; Title: string; id: string; 
 }
 const AllIdeas = ({colorTheme}: Props) => {
-    const { allIdeas }: {allIdeas: [IdeaTypes]|null} = useAllIdeas();
+    const allIdeas : any = useAllIdeas();
     return (
         <Container colorTheme={colorTheme}>
             <Title colorTheme={colorTheme}>
@@ -49,7 +49,7 @@ const AllIdeas = ({colorTheme}: Props) => {
             </Title>
             <IdeaContainer>
                 {
-                    allIdeas?.map((idea : IdeaTypes , index: Key | null | undefined) => {
+                    allIdeas.allIdeas?.map((idea : IdeaTypes , index: Key | null | undefined) => {
                         console.log(idea)
                         return (
                             <Mini_Idea colorTheme={colorTheme} idea={idea} key={index}/>
