@@ -1,6 +1,9 @@
-import styled from "styled-components";
-import { IdeaTypes } from "../constants/types";
+import styled, { keyframes } from "styled-components";
+import { IdeaTypes, newIdeaTypes } from "../constants/types";
 import { useRef, useState } from "react";
+import { addDoc } from "firebase/firestore";
+import { useAllIdeas } from "../contexts/ideasContext";
+import useUserAuth from "../contexts/authContext";
 
 const Container = styled.div`
 	display: flex;
@@ -8,6 +11,7 @@ const Container = styled.div`
 	align-items: center;
 	flex-direction: column;
 	width: 95%;
+	overflow-y: scroll;
 `;
 interface Props {
 	colorTheme: string;
@@ -18,7 +22,6 @@ const NewIdeaForm = styled.form<Props>`
 	align-items: center;
 	flex-direction: column;
 	width: 90%;
-	min-height: 40vh;
 	background-color: ${(props) =>
 		props.colorTheme === "light" ? "#fff" : "#24262C"};
 	color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
@@ -97,7 +100,11 @@ const ListInput = styled.input<Props>`
 	word-break: break-all;
 	font-size: 1rem;
 	font-weight: 400;
-	border: none;
+	border: 1px solid
+		${(props) =>
+			props.colorTheme === "light"
+				? "rgb(28,29,34, 0.08)"
+				: "rgb(255, 255, 255, 0.08)"};
 	color: ${(props) =>
 		props.colorTheme === "light"
 			? "rgb(28,29,34, 0.8)"
@@ -109,7 +116,7 @@ const ListInput = styled.input<Props>`
 	&:focus {
 		border: ${(props) =>
 			props.colorTheme === "light"
-				? "2px solid rgb(28,29,34, 0.2)"
+				? "2px dashed rgb(28,29,34, 0.2)"
 				: " 2px solid rgb(255, 255, 255, 0.2)"};
 	}
 	&::placeholder {
@@ -140,7 +147,14 @@ const Title = styled.label<Props>`
 	width: 100%;
 	margin: 3vh 0 4vh 1vw;
 `;
-const DeleteButton = styled.button``;
+const DeleteButton = styled.button`
+	width: 2vh;
+	height: 2vh;
+	background-color: transparent;
+	border: none;
+	outline: none;
+	cursor: pointer;
+`;
 const ProConContainer = styled.div<Props>`
 	display: flex;
 	justify-content: flex-start;
@@ -168,28 +182,125 @@ const UL = styled.ul`
 `;
 const LI = styled.li<Props>`
 	display: flex;
-	justify-content: flex-start;
+	justify-content: space-evenly;
 	align-items: center;
 	flex-direction: row;
-	width: 100%;
+	width: 80%;
+	max-width: 40vw;
+	text-overflow: ellipsis;
 	margin: 0 0 0 3vw;
-	padding: 0;
+	padding: 0 0 0 1vw;
 `;
+const Button = styled.button<Props>`
+	width: 5rem;
+	height: 2rem;
+	color: ${(props) => (props.colorTheme === "light" ? "black" : "white")};
+	border: none;
+	outline: none;
+	background: ${(props) =>
+		props.colorTheme === "light" ? "white" : "#292B31"};
+	border-radius: 8px;
+	opacity: 0.8;
+	box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+	transition: all 0.5s ease;
+`;
+const ButtonCrate = styled.div`
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	width: 100%;
+	height: 10vh;
+	gap: 0.5vw;
+	margin: 0 4vw 1vh 0;
+`;
+const Listing = styled.div`
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;
+`;
+const dotCarousel = keyframes`
+	0% {
+		box-shadow: 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff;
+	}
+	50% {
+		box-shadow: 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff;
+	}
+	100% {
+		box-shadow: 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff;
+	}
+`;
+const LoadingDots = styled.div`
+	position: relative;
+	left: -9999px;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #9880ff;
+	color: #9880ff;
+	box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff, 10014px 0 0 0 #9880ff;
+	animation: ${dotCarousel} 1.5s infinite linear;
+`;  
 const NewIdea = ({ colorTheme }: Props) => {
+	const [title, setTitle] = useState("");
+	const [Description, setDescription] = useState("");
+
 	const [pros, setPros] = useState<Array<string>>([]);
 	const [cons, setCons] = useState<Array<string>>([]);
 
+	const [submitting, setSubmitting] = useState(false);
+
 	const proInputRef = useRef<HTMLInputElement>(null);
 	const conInputRef = useRef<HTMLInputElement>(null);
+
+	const formRef = useRef<HTMLFormElement>(null);
+
+	const ideaContext:any = useAllIdeas();
+	const authContext:any = useUserAuth();
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		if(!authContext.user) return;
+		e.preventDefault();
+		const newIdea:newIdeaTypes = {
+			Title: title,
+			Description: Description,
+			Pros: pros.length > 0 ? pros : null,
+			Cons: cons.length > 0 ? cons : null,
+			Stage: "Thought",
+			StageStatus: false,
+			Evaluation: null,
+			ROI: null,
+			TeamId: null,
+			AuthorId: authContext.user.uid,
+		};
+		setSubmitting(true);
+		await ideaContext.addIdeaToDatabase(newIdea);
+		setPros([]);
+		setCons([]);
+		formRef.current?.reset();
+		setSubmitting(false);
+	};
+	const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+		setPros([]);
+		setCons([]);
+		formRef.current?.reset();
+	};
 	return (
 		<Container>
-			<NewIdeaForm colorTheme={colorTheme}>
+			{submitting ? <LoadingDots /> :
+			<NewIdeaForm
+				colorTheme={colorTheme}
+				ref={formRef}
+				onSubmit={handleSubmit}>
 				<Title colorTheme={colorTheme}>New Idea</Title>
 				<InputContainer>
 					<NewIdeaInput
 						colorTheme={colorTheme}
 						type="text"
 						required
+						onChange={(e) => setTitle(e.target.value)}
 					/>
 					<InputLabel colorTheme={colorTheme}>Title</InputLabel>
 				</InputContainer>
@@ -198,6 +309,7 @@ const NewIdea = ({ colorTheme }: Props) => {
 						colorTheme={colorTheme}
 						type="text"
 						required
+						onChange={(e) => setDescription(e.target.value)}
 					/>
 					<InputLabel colorTheme={colorTheme}>Description</InputLabel>
 				</InputContainer>
@@ -205,47 +317,53 @@ const NewIdea = ({ colorTheme }: Props) => {
 					<NewIdeaInput
 						colorTheme={colorTheme}
 						type="file"
-						accept="image/png, image/jpg, image/gif, image/jpeg"
-						required
-						style={{ padding: "1.5vh 1vw" }}
+						accept="image/*"
+						style={{ padding: "1.5vh 1.5vw" }}
 					/>
 				</InputContainer>
 				<ProConContainer colorTheme={colorTheme}>
-					<div style={{ width: "100%", paddingLeft: "1vw" }}>
-						Pros
-					</div>
-					<UL>
-						{pros.map((pro, index) => {
-							return (
-								<LI
-									colorTheme={colorTheme}
-									key={index}>
-									+ {pro}
-									<DeleteButton
-										onClick={() => {
-											setPros([
-												...pros.slice(0, index),
-												...pros.slice(index + 1),
-											]);
-										}}>
-										-
-									</DeleteButton>
-								</LI>
-							);
-						})}
-					</UL>
+					<Listing>
+						<div style={{ width: "90%", padding: "1vh 1vw 2vh 0" }}>
+							Pros
+						</div>
+						<UL>
+							{pros.map((pro, index) => {
+								return (
+									<LI
+										colorTheme={colorTheme}
+										key={index}>
+										+ {pro}
+										<DeleteButton
+											onClick={() => {
+												setPros([
+													...pros.slice(0, index),
+													...pros.slice(index + 1),
+												]);
+											}}>
+											-
+										</DeleteButton>
+									</LI>
+								);
+							})}
+						</UL>
+					</Listing>
 					<InputContainer>
 						<ListInput
 							colorTheme={colorTheme}
 							type="text"
 							placeholder="Add Pros"
-							required
 							style={{
 								padding: "1.5vh 1vw",
 								width: "80%",
 								margin: "0 0 0 1vw",
 							}}
 							ref={proInputRef}
+							onKeyPress={(e) => {
+								if (e.key === "Enter") {
+									// prevent page refresh
+									e.preventDefault();
+								}
+							}}
 						/>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -305,11 +423,16 @@ const NewIdea = ({ colorTheme }: Props) => {
 							colorTheme={colorTheme}
 							type="text"
 							placeholder="Add Cons"
-							required
 							style={{
 								padding: "1.5vh 1vw",
 								width: "80%",
 								margin: "0 0 0 1vw",
+							}}
+							onKeyPress={(e) => {
+								if (e.key === "Enter") {
+									// prevent page refresh
+									e.preventDefault();
+								}
 							}}
 							ref={conInputRef}
 						/>
@@ -342,8 +465,20 @@ const NewIdea = ({ colorTheme }: Props) => {
 						</svg>
 					</InputContainer>
 				</ProConContainer>
-				<button>Submit</button>
+				<ButtonCrate>
+					<Button
+						colorTheme={colorTheme}
+						type="submit">
+						Submit
+					</Button>
+					<Button
+						colorTheme={colorTheme}
+						onClick={handleCancel}>
+						Cancel
+					</Button>
+				</ButtonCrate>
 			</NewIdeaForm>
+	}
 		</Container>
 	);
 };

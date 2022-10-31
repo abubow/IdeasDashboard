@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { db } from "../firebase-config";
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDoc, getDocs } from "firebase/firestore";
 import { IdeaTypes } from "../constants/types";
 
 export const AllIdeasContext = createContext({});
@@ -32,8 +32,13 @@ export function AllIdeasProvider({ children }: Props) {
             getIdeas();
         }, []
     )
+
+    const addIdeaToDatabase = async (idea: IdeaTypes) => {
+        const ideaRef = await addDoc(ideasCollectionRef, idea);
+        console.log(ideaRef);
+    }
     return (
-        <AllIdeasContext.Provider value={{ allIdeas, setAllIdeas }}>
+        <AllIdeasContext.Provider value={{ allIdeas, setAllIdeas, addIdeaToDatabase }}>
             {children}
         </AllIdeasContext.Provider>
     );
