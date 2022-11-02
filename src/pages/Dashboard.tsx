@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import Navbar from '../components/Navbar';
 import Options from '../components/Options';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import DisplayPanel from '../components/DisplayPanel';
 import IdeaPopUp from '../components/IdeaPopUp';
 import { OptionsSelectedProvider } from '../contexts/optionsContext';
 import { AllIdeasProvider } from '../contexts/ideasContext';
+import { ColorContext, ThemeProvider } from '../contexts/themeContext';
 
 interface Props {
     color: string;
@@ -43,19 +44,21 @@ const Dashboard = (props: PropsF) => {
             ],
     }
 
-    const [colorTheme, setColorTheme] = useState('light');
+    const { colorTheme, setColorTheme } = useContext(ColorContext);
     return (
-        <Container color={colorTheme === 'light' ? "#fff" : colors.backgroundColor}>
-            <Navbar color={colors.navbar} />
-            <OptionsSelectedProvider>
-                <>
-                    <Options colorTheme={colorTheme} setColorTheme={setColorTheme} color={colors.options} content={OptionsContent} />
-                    <AllIdeasProvider>
-                        <DisplayPanel colorTheme={colorTheme} />
-                    </AllIdeasProvider>
-                </>
-            </OptionsSelectedProvider>
-        </Container>
+        <ThemeProvider>
+            <Container color={colorTheme === 'light' ? "#fff" : colors.backgroundColor}>
+                <Navbar color={colors.navbar} />
+                <OptionsSelectedProvider>
+                    <>
+                        <Options color={colors.options} content={OptionsContent} />
+                        <AllIdeasProvider>
+                            <DisplayPanel />
+                        </AllIdeasProvider>
+                    </>
+                </OptionsSelectedProvider>
+            </Container>
+        </ThemeProvider>
     );
 }
 

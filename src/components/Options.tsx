@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import useOptionSelected from "../contexts/optionsContext";
+import { useTheme } from "../contexts/themeContext";
 // importing prop types to make sure the props are the right type
 interface Props {
 	colorTheme: string;
@@ -63,7 +64,7 @@ const Option = styled.div`
 const OptionLi = styled.li`
 	width: 100%;
 	padding: 0.1rem 0;
-	transition: all 0.5s ease;
+	transition: all 0.3s ease;
 `;
 const SubOptions = styled.ul`
 	list-style: none;
@@ -116,7 +117,6 @@ const SwitchBall = styled.div<ToggleProps>`
 	z-index: 0;
 `;
 interface PropsF {
-	colorTheme: string;
 	color: string;
 	content: {
 		title: string;
@@ -125,10 +125,10 @@ interface PropsF {
 			subOptions: string[];
 		}[];
 	};
-	setColorTheme: (colorTheme: string) => void;
 }
-const Options = ({ colorTheme, setColorTheme, content, color }: PropsF) => {
+const Options = ({ content, color }: PropsF) => {
 	const { optionSelected, setOptionSelected }: any = useOptionSelected();
+	const { colorTheme, setColorTheme } = useTheme();
 	return (
 		<Container
 			colorTheme={colorTheme}
@@ -171,7 +171,6 @@ const Options = ({ colorTheme, setColorTheme, content, color }: PropsF) => {
 													option.name
 														? "rotate(0deg)"
 														: "rotate(90deg)",
-												transition: "all 0.4s ease",
 											}}>
 											<path
 												d="M9 1L5 5L1 1"
@@ -198,7 +197,6 @@ const Options = ({ colorTheme, setColorTheme, content, color }: PropsF) => {
 												? "100%"
 												: "0",
 										overflow: "hidden",
-										transition: "all 0.4s ease",
 									}}>
 									{option.subOptions.map(
 										(subOption, index) => {

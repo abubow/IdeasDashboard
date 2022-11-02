@@ -103,6 +103,14 @@ const TabsC = ({ idea, colorTheme }: FProps) => {
 			id: "3",
 			name: "Roi",
 		},
+		{
+			id: "4",
+			name: "Comments",
+		},
+		{
+			id: "5",
+			name: "Attachments",
+		},
 	]
 	const [tabSelected, setTabSelected] = useState(Tabs[0].id);
 	

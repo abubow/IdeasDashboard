@@ -46,21 +46,31 @@ const Timeline = ({ colorTheme }: Props) => {
 		},
 	];
     const allIdeas:any = useAllIdeas();
-	const ideas: IdeaTypes[][] = [[], [], [], []];
+	const ideasCategorized = [
+		{
+			title: "Thought",
+			ideas: allIdeas.allIdeas.filter((idea: IdeaTypes) => idea.Stage === "Thought"),
+		},
+		{
+			title: "Brainstormed",
+			ideas: allIdeas.allIdeas.filter(
+				(idea: IdeaTypes) => idea.Stage === "Brainstormed"
+			),
+		},
+		{
+			title: "Evaluated",
+			ideas: allIdeas.allIdeas.filter((idea: IdeaTypes) => idea.Stage === "Evaluated"),
+		},
+		{
+			title: "ROI Identified",
+			ideas: allIdeas.allIdeas.filter(
+				(idea: IdeaTypes) => idea.Stage === "ROI Identified"
+			),
+		},
+	];
 	useEffect(
 		() => {
-			allIdeas.allIdeas?.forEach((idea: IdeaTypes) => {
-				if (idea.Stage === "Thought") {
-					ideas[0].push(idea);
-				} else if (idea.Stage === "Brainstormed") {
-					ideas[1].push(idea);
-				} else if (idea.Stage === "Evaluated") {
-					ideas[2].push(idea);
-					console.log(idea);
-				} else {
-					ideas[3].push(idea);
-				}
-			});
+			console.table(ideasCategorized);
 		},
 		[allIdeas]
 	)
@@ -75,7 +85,9 @@ const Timeline = ({ colorTheme }: Props) => {
 							colorTheme={colorTheme}
 							title={bar.title}
 							ideas={
-                                ideas[index]
+								ideasCategorized.filter(
+									(idea: any) => idea.title === bar.title
+								)[0].ideas
 							}
 							key={index}
 						/>

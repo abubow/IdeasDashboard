@@ -5,6 +5,8 @@ import useUserAuth from "../contexts/authContext";
 import AllIdeas from "./AllIdeas";
 import useOptionSelected from "../contexts/optionsContext";
 import NewIdea from "./NewIdea";
+import SettingsPopup from "./SettingsPopup";
+import { useTheme } from "../contexts/themeContext";
 
 interface Props {
     colorTheme: string;
@@ -70,12 +72,11 @@ const Profile = styled.img<Props>`
     border-radius: 50%;
     background-color: #000;
 `;
-interface PropsF {
-    colorTheme: string,
-}
-const DisplayPanel = ( {  colorTheme }: PropsF ) => {
+const DisplayPanel = () => {
     const { user }:any = useUserAuth();
     const { optionSelected }:any = useOptionSelected();
+    const [settingsOpen, setSettingsOpen] = useState(true);
+    const { colorTheme, setColorTheme } = useTheme();
     return (
         <Container colorTheme={colorTheme}>
             <TopBar colorTheme={colorTheme}>
@@ -90,8 +91,11 @@ const DisplayPanel = ( {  colorTheme }: PropsF ) => {
                         user?.displayName
                     }
                 </Username>
-                <Profile src="https://avatars.githubusercontent.com/u/47056243?v=4" colorTheme={colorTheme}/>
+                <Profile src="https://avatars.githubusercontent.com/u/47056243?v=4" colorTheme={colorTheme} onClick={() => setSettingsOpen(true)}/>
             </ProfileContainer>
+            {
+                settingsOpen ? <SettingsPopup colorTheme={colorTheme} setSettingsOpen={setSettingsOpen}/> : null
+            }
             </TopBar>
             {
                 optionSelected === 'Projects' ? <Timeline colorTheme={colorTheme}/> : 

@@ -239,9 +239,10 @@ const LoadingDots = styled.div`
 	border-radius: 5px;
 	background-color: #9880ff;
 	color: #9880ff;
-	box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff, 10014px 0 0 0 #9880ff;
+	box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff,
+		10014px 0 0 0 #9880ff;
 	animation: ${dotCarousel} 1.5s infinite linear;
-`;  
+`;
 const NewIdea = ({ colorTheme }: Props) => {
 	const [title, setTitle] = useState("");
 	const [Description, setDescription] = useState("");
@@ -256,13 +257,13 @@ const NewIdea = ({ colorTheme }: Props) => {
 
 	const formRef = useRef<HTMLFormElement>(null);
 
-	const ideaContext:any = useAllIdeas();
-	const authContext:any = useUserAuth();
+	const ideaContext: any = useAllIdeas();
+	const authContext: any = useUserAuth();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		if(!authContext.user) return;
+		if (!authContext.user) return;
 		e.preventDefault();
-		const newIdea:newIdeaTypes = {
+		const newIdea: newIdeaTypes = {
 			Title: title,
 			Description: Description,
 			Pros: pros.length > 0 ? pros : null,
@@ -289,55 +290,137 @@ const NewIdea = ({ colorTheme }: Props) => {
 	};
 	return (
 		<Container>
-			{submitting ? <LoadingDots /> :
-			<NewIdeaForm
-				colorTheme={colorTheme}
-				ref={formRef}
-				onSubmit={handleSubmit}>
-				<Title colorTheme={colorTheme}>New Idea</Title>
-				<InputContainer>
-					<NewIdeaInput
-						colorTheme={colorTheme}
-						type="text"
-						required
-						onChange={(e) => setTitle(e.target.value)}
-					/>
-					<InputLabel colorTheme={colorTheme}>Title</InputLabel>
-				</InputContainer>
-				<InputContainer>
-					<NewIdeaInput
-						colorTheme={colorTheme}
-						type="text"
-						required
-						onChange={(e) => setDescription(e.target.value)}
-					/>
-					<InputLabel colorTheme={colorTheme}>Description</InputLabel>
-				</InputContainer>
-				<InputContainer>
-					<NewIdeaInput
-						colorTheme={colorTheme}
-						type="file"
-						accept="image/*"
-						style={{ padding: "1.5vh 1.5vw" }}
-					/>
-				</InputContainer>
-				<ProConContainer colorTheme={colorTheme}>
-					<Listing>
-						<div style={{ width: "90%", padding: "1vh 1vw 2vh 0" }}>
-							Pros
+			{submitting ? (
+				<LoadingDots />
+			) : (
+				<NewIdeaForm
+					colorTheme={colorTheme}
+					ref={formRef}
+					onSubmit={handleSubmit}>
+					<Title colorTheme={colorTheme}>New Idea</Title>
+					<InputContainer>
+						<NewIdeaInput
+							colorTheme={colorTheme}
+							type="text"
+							required
+							onChange={(e) => setTitle(e.target.value)}
+						/>
+						<InputLabel colorTheme={colorTheme}>Title</InputLabel>
+					</InputContainer>
+					<InputContainer>
+						<NewIdeaInput
+							colorTheme={colorTheme}
+							type="text"
+							required
+							onChange={(e) => setDescription(e.target.value)}
+						/>
+						<InputLabel colorTheme={colorTheme}>
+							Description
+						</InputLabel>
+					</InputContainer>
+					<InputContainer>
+						<NewIdeaInput
+							colorTheme={colorTheme}
+							type="file"
+							accept="image/*"
+							style={{ padding: "1.5vh 1.5vw" }}
+						/>
+					</InputContainer>
+					<ProConContainer colorTheme={colorTheme}>
+						<Listing>
+							<div
+								style={{
+									width: "90%",
+									padding: "1vh 1vw 2vh 0",
+								}}>
+								Pros
+							</div>
+							<UL>
+								{pros.map((pro, index) => {
+									return (
+										<LI
+											colorTheme={colorTheme}
+											key={index}>
+											+ {pro}
+											<DeleteButton
+												onClick={() => {
+													setPros([
+														...pros.slice(0, index),
+														...pros.slice(
+															index + 1
+														),
+													]);
+												}}>
+												-
+											</DeleteButton>
+										</LI>
+									);
+								})}
+							</UL>
+						</Listing>
+						<InputContainer>
+							<ListInput
+								colorTheme={colorTheme}
+								type="text"
+								placeholder="Add Pros"
+								style={{
+									padding: "1.5vh 1vw",
+									width: "80%",
+									margin: "0 0 0 1vw",
+								}}
+								ref={proInputRef}
+								onKeyPress={(e) => {
+									if (e.key === "Enter") {
+										// prevent page refresh
+										e.preventDefault();
+									}
+								}}
+							/>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								strokeWidth="1.5"
+								stroke="currentColor"
+								style={{
+									width: "2vw",
+									height: "2vh",
+									marginLeft: "1vw",
+									cursor: "pointer",
+								}}
+								onClick={() => {
+									if (proInputRef.current?.value) {
+										setPros([
+											...pros,
+											proInputRef.current.value,
+										]);
+										proInputRef.current.value = "";
+									}
+								}}>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M12 6v12m6-6H6"
+								/>
+							</svg>
+						</InputContainer>
+					</ProConContainer>
+					<ProConContainer colorTheme={colorTheme}>
+						<div style={{ width: "100%", paddingLeft: "1vw" }}>
+							Cons
 						</div>
 						<UL>
-							{pros.map((pro, index) => {
+							{cons.map((con, index) => {
 								return (
 									<LI
 										colorTheme={colorTheme}
 										key={index}>
-										+ {pro}
+										+ {con}
 										<DeleteButton
 											onClick={() => {
-												setPros([
-													...pros.slice(0, index),
-													...pros.slice(index + 1),
+												setCons([
+													...cons.slice(0, index),
+													...cons.slice(index + 1),
 												]);
 											}}>
 											-
@@ -346,139 +429,67 @@ const NewIdea = ({ colorTheme }: Props) => {
 								);
 							})}
 						</UL>
-					</Listing>
-					<InputContainer>
-						<ListInput
-							colorTheme={colorTheme}
-							type="text"
-							placeholder="Add Pros"
-							style={{
-								padding: "1.5vh 1vw",
-								width: "80%",
-								margin: "0 0 0 1vw",
-							}}
-							ref={proInputRef}
-							onKeyPress={(e) => {
-								if (e.key === "Enter") {
-									// prevent page refresh
-									e.preventDefault();
-								}
-							}}
-						/>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth="1.5"
-							stroke="currentColor"
-							style={{
-								width: "2vw",
-								height: "2vh",
-								marginLeft: "1vw",
-								cursor: "pointer",
-							}}
-							onClick={() => {
-								if (proInputRef.current?.value) {
-									setPros([
-										...pros,
-										proInputRef.current.value,
-									]);
-									proInputRef.current.value = "";
-								}
-							}}>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M12 6v12m6-6H6"
+						<InputContainer>
+							<ListInput
+								colorTheme={colorTheme}
+								type="text"
+								placeholder="Add Cons"
+								style={{
+									padding: "1.5vh 1vw",
+									width: "80%",
+									margin: "0 0 0 1vw",
+								}}
+								onKeyPress={(e) => {
+									if (e.key === "Enter") {
+										// prevent page refresh
+										e.preventDefault();
+									}
+								}}
+								ref={conInputRef}
 							/>
-						</svg>
-					</InputContainer>
-				</ProConContainer>
-				<ProConContainer colorTheme={colorTheme}>
-					<div style={{ width: "100%", paddingLeft: "1vw" }}>
-						Cons
-					</div>
-					<UL>
-						{cons.map((con, index) => {
-							return (
-								<LI
-									colorTheme={colorTheme}
-									key={index}>
-									+ {con}
-									<DeleteButton
-										onClick={() => {
-											setCons([
-												...cons.slice(0, index),
-												...cons.slice(index + 1),
-											]);
-										}}>
-										-
-									</DeleteButton>
-								</LI>
-							);
-						})}
-					</UL>
-					<InputContainer>
-						<ListInput
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								style={{
+									width: "2vw",
+									height: "2vh",
+									marginLeft: "1vw",
+									cursor: "pointer",
+								}}
+								onClick={() => {
+									if (conInputRef.current?.value) {
+										setCons([
+											...cons,
+											conInputRef.current.value,
+										]);
+										conInputRef.current.value = "";
+									}
+								}}>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M12 6v12m6-6H6"
+								/>
+							</svg>
+						</InputContainer>
+					</ProConContainer>
+					<ButtonCrate>
+						<Button
 							colorTheme={colorTheme}
-							type="text"
-							placeholder="Add Cons"
-							style={{
-								padding: "1.5vh 1vw",
-								width: "80%",
-								margin: "0 0 0 1vw",
-							}}
-							onKeyPress={(e) => {
-								if (e.key === "Enter") {
-									// prevent page refresh
-									e.preventDefault();
-								}
-							}}
-							ref={conInputRef}
-						/>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="1.5"
-							stroke="currentColor"
-							style={{
-								width: "2vw",
-								height: "2vh",
-								marginLeft: "1vw",
-								cursor: "pointer",
-							}}
-							onClick={() => {
-								if (conInputRef.current?.value) {
-									setCons([
-										...cons,
-										conInputRef.current.value,
-									]);
-									conInputRef.current.value = "";
-								}
-							}}>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M12 6v12m6-6H6"
-							/>
-						</svg>
-					</InputContainer>
-				</ProConContainer>
-				<ButtonCrate>
-					<Button
-						colorTheme={colorTheme}
-						type="submit">
-						Submit
-					</Button>
-					<Button
-						colorTheme={colorTheme}
-						onClick={handleCancel}>
-						Cancel
-					</Button>
-				</ButtonCrate>
-			</NewIdeaForm>
-	}
+							type="submit">
+							Submit
+						</Button>
+						<Button
+							colorTheme={colorTheme}
+							onClick={handleCancel}>
+							Cancel
+						</Button>
+					</ButtonCrate>
+				</NewIdeaForm>
+			)}
 		</Container>
 	);
 };

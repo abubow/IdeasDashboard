@@ -10,6 +10,13 @@ body{
   color:#fff;
   overflow: hidden;
 }
+h1{
+  font-size: 3rem;
+  font-weight: 900;
+  text-align: center;
+  margin: 1rem 0;
+  line-height: 1.2;
+}
 h2{
   font-size: 1.5rem;
   font-weight: 600;
