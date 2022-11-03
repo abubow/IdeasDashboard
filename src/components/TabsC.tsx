@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { IdeaTypes } from "../constants/types";
 import parse from "html-react-parser";
+import CommentsList from "./CommentsList";
 
 interface Props {
 	colorTheme: string;
@@ -10,7 +11,7 @@ const Container = styled.div<Props>`
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-    flex-direction: column;
+	flex-direction: column;
 	width: 95%;
 `;
 const TabIdentifierCrate = styled.div`
@@ -39,29 +40,31 @@ const TabIdentifier = styled.button<TabProps>`
 	border-radius: 0.5rem 0.5rem 0 0;
 	margin-right: 0.1vw;
 	opacity: ${(props) => (props.selected ? "0.9" : "0.3")};
-    border: none;
-    outline: none;
-    cursor: pointer;
-    transition: all 0.2s ease-out;
-    &:hover{
-        opacity: 1;
-    }
+	border: none;
+	outline: none;
+	cursor: pointer;
+	transition: all 0.2s ease-out;
+	&:hover {
+		opacity: 1;
+	}
 `;
 const TabContent = styled.div<TabProps>`
-    display: ${(props) => (props.selected ? "flex" : "none")};
-    justify-content: flex-start;
-    align-items: flex-start;
+	display: ${(props) => (props.selected ? "flex" : "none")};
+	justify-content: flex-start;
+	align-items: flex-start;
 	flex-direction: column;
-    width: 100%;
-    height: 100%;
-    background-color: ${(props) =>
-        props.colorTheme === "light" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)"};
-    color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
-    padding: 1vh 1vw;
-    opacity: 0.9;
-    border-radius: 0 0 0.5rem 0.5rem;
-    transition: all 0.3s ease-in;
-    margin-top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: ${(props) =>
+		props.colorTheme === "light"
+			? "rgba(0,0,0,0.1)"
+			: "rgba(255,255,255,0.1)"};
+	color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
+	padding: 1vh 1vw;
+	opacity: 0.9;
+	border-radius: 0 0 0.5rem 0.5rem;
+	transition: all 0.3s ease-in;
+	margin-top: 0;
 	max-height: 60vh;
 	overflow-y: auto;
 `;
@@ -111,9 +114,9 @@ const TabsC = ({ idea, colorTheme }: FProps) => {
 			id: "5",
 			name: "Attachments",
 		},
-	]
+	];
 	const [tabSelected, setTabSelected] = useState(Tabs[0].id);
-	
+
 	return (
 		<Container colorTheme={colorTheme}>
 			<TabIdentifierCrate>
@@ -122,69 +125,70 @@ const TabsC = ({ idea, colorTheme }: FProps) => {
 						key={item.id}
 						colorTheme={colorTheme}
 						selected={tabSelected === item.id}
-                        onClick={() => setTabSelected(item.id)}
-                        >
+						onClick={() => setTabSelected(item.id)}>
 						{item.name}
 					</TabIdentifier>
 				))}
-                
 			</TabIdentifierCrate>
-            {
-                Tabs.map((item) => (
-                    <TabContent
-                        key={item.id}
-                        colorTheme={colorTheme}
-                        selected={tabSelected === item.id}
-                    >
-                        {
-							item.id === "1" ? (
-								<>
-									<Description colorTheme={colorTheme}>
-										{
-											parse(idea.Description)
-										}
-									</Description>
-									<Pros colorTheme={colorTheme}>
-										<h2>Pros</h2>
-										{idea.Pros?.map((item) => (
-											<Li key={item} colorTheme={colorTheme}>
-												{item}
-											</Li>
-										))}
-									</Pros>
-									<Cons colorTheme={colorTheme}>
-										<h2>Cons</h2>
-										{idea.Cons?.map((item) => (
-											<Li key={item} colorTheme={colorTheme}>
-												{item}
-											</Li>
-										))}
-									</Cons>
-								</>
-							)
-							: item.id === "2" ? (
-								<>
-									<Description colorTheme={colorTheme}>
-										{
-											idea.Evaluation? parse(`
-										score: ${idea.Evaluation[0]}` + '<br/>'+ `
+			{Tabs.map((item) => (
+				<TabContent
+					key={item.id}
+					colorTheme={colorTheme}
+					selected={tabSelected === item.id}>
+					{item.id === "1" ? (
+						<>
+							<Description colorTheme={colorTheme}>
+								{parse(idea.Description)}
+							</Description>
+							<Pros colorTheme={colorTheme}>
+								<h2>Pros</h2>
+								{idea.Pros?.map((item) => (
+									<Li
+										key={item}
+										colorTheme={colorTheme}>
+										{item}
+									</Li>
+								))}
+							</Pros>
+							<Cons colorTheme={colorTheme}>
+								<h2>Cons</h2>
+								{idea.Cons?.map((item) => (
+									<Li
+										key={item}
+										colorTheme={colorTheme}>
+										{item}
+									</Li>
+								))}
+							</Cons>
+						</>
+					) : item.id === "2" ? (
+						<>
+							<Description colorTheme={colorTheme}>
+								{idea.Evaluation
+									? parse(
+											`
+										score: ${idea.Evaluation[0]}` +
+												"<br/>" +
+												`
 										${idea.Evaluation[1]}
-										`) : "No evaluation yet"
-										}
-									</Description>
-								</>
-							)
-							: (
-								<>
-									<Description colorTheme={colorTheme}>
-										{idea.ROI? idea.ROI : "No ROI provided yet"}
-									</Description>
-								</>
-							)
-						}
-                    </TabContent>
-                ))
-            }
+										`
+									  )
+									: "No evaluation yet"}
+							</Description>
+						</>
+					) : item.id === "3" ? (
+						<>
+							<Description colorTheme={colorTheme}>
+								{idea.ROI ? idea.ROI : "No ROI provided yet"}
+							</Description>
+						</>
+					) : (
+						<>
+							<CommentsList colorTheme={colorTheme} />
+						</>
+					)}
+				</TabContent>
+			))}
 		</Container>
 	);
 };
