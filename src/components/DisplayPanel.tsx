@@ -75,7 +75,7 @@ const Profile = styled.img<Props>`
 const DisplayPanel = () => {
     const { user }:any = useUserAuth();
     const { optionSelected }:any = useOptionSelected();
-    const [settingsOpen, setSettingsOpen] = useState(true);
+    const [settingsOpen, setSettingsOpen] = useState(false);
     const { colorTheme, setColorTheme } = useTheme();
     return (
         <Container colorTheme={colorTheme}>
