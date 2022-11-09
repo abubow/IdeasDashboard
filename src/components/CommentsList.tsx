@@ -1,5 +1,7 @@
+import { useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
+import CommentForm from "./CommentForm";
 
 interface Props {
 	colorTheme: string;
@@ -7,13 +9,43 @@ interface Props {
 const Container = styled.div`
 	width: 100%;
 	height: 100%;
-    margin: 0;
+	margin: 0;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
 	gap: 1vh;
 	overflow: auto;
+`;
+const CommentsContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+`;
+const ButtonCrate = styled.div`
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	width: 100%;
+	height: 10vh;
+	gap: 0.5vw;
+    padding: 1vh 1vw;
+    margin: 0 1vw;
+	max-width: 60vw;
+`;
+const Button = styled.button<Props>`
+	width: 5rem;
+	height: 2rem;
+	color: ${(props) => (props.colorTheme === "light" ? "black" : "white")};
+	border: none;
+	outline: none;
+	margin-right: 2.5vw;
+	background: ${(props) =>
+		props.colorTheme === "light" ? "white" : "#292B31"};
+	border-radius: 8px;
+	opacity: 0.8;
+	transition: all 0.5s ease;
 `;
 
 const CommentsList = ({ colorTheme }: Props) => {
@@ -75,13 +107,34 @@ const CommentsList = ({ colorTheme }: Props) => {
 			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
 		},
 	];
+	const [commentOpen, setCommentOpen] = useState(false);
 	return (
-        <Container>
-            {allComments.map((comment) => (
-                <Comment key={comment.id} comment={comment} colorTheme={colorTheme} />
-            ))}
-        </Container>
-    );
+		<Container>
+			<ButtonCrate>
+				<Button
+					colorTheme={colorTheme}
+					onClick={() => setCommentOpen(!commentOpen)}>
+					{commentOpen ? "Close" : "Create"}
+				</Button>
+			</ButtonCrate>
+
+			<CommentsContainer>
+				{commentOpen ? (
+					<CommentForm
+						colorTheme={colorTheme}
+						setCommentOpen={setCommentOpen}
+					/>
+				) : null}
+				{allComments.map((comment) => (
+					<Comment
+						key={comment.id}
+						comment={comment}
+						colorTheme={colorTheme}
+					/>
+				))}
+			</CommentsContainer>
+		</Container>
+	);
 };
 
 export default CommentsList;

@@ -15,6 +15,7 @@ const CommentContainer = styled.div<Props>`
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
+    max-width: 60vw;
     @media (max-width: 768px) {
         width: 100%;
     }

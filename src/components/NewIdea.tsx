@@ -1,9 +1,10 @@
 import styled, { keyframes } from "styled-components";
-import { IdeaTypes, newIdeaTypes } from "../constants/types";
+import { IdeaTypes, newIdeaSummaryTypes, newIdeaTypes } from "../constants/types";
 import { useRef, useState } from "react";
 import { addDoc } from "firebase/firestore";
 import { useAllIdeas } from "../contexts/ideasContext";
 import useUserAuth from "../contexts/authContext";
+import { useAllIdeasSummaries } from "../contexts/allIdeaSumContext";
 
 const Container = styled.div`
 	display: flex;
@@ -258,6 +259,7 @@ const NewIdea = ({ colorTheme }: Props) => {
 	const formRef = useRef<HTMLFormElement>(null);
 
 	const ideaContext: any = useAllIdeas();
+	const ideasSummaryContext: any = useAllIdeasSummaries();
 	const authContext: any = useUserAuth();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -274,9 +276,19 @@ const NewIdea = ({ colorTheme }: Props) => {
 			ROI: null,
 			TeamId: null,
 			AuthorId: authContext.user.uid,
+			Comments: null,
 		};
 		setSubmitting(true);
-		await ideaContext.addIdeaToDatabase(newIdea);
+		const ideaRef = await ideaContext.addIdeaToDatabase(newIdea);
+		const newIdeaSummary: newIdeaSummaryTypes = {
+			Title: title,
+			Stage: "Thought",
+			Comments:  0,
+			Attachments: 0,
+			IdeaOutline: ideaRef.id,
+			StageStatus: false,
+		};
+		await ideasSummaryContext.addIdeaSummaryToDatabase(newIdeaSummary);
 		setPros([]);
 		setCons([]);
 		formRef.current?.reset();
@@ -451,7 +463,7 @@ const NewIdea = ({ colorTheme }: Props) => {
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
-								stroke-width="1.5"
+								strokeWidth="1.5"
 								stroke="currentColor"
 								style={{
 									width: "2vw",
@@ -469,8 +481,8 @@ const NewIdea = ({ colorTheme }: Props) => {
 									}
 								}}>
 								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
+									strokeLinecap="round"
+									strokeLinejoin="round"
 									d="M12 6v12m6-6H6"
 								/>
 							</svg>

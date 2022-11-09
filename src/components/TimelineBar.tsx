@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { IdeaTypes } from "../constants/types";
+import { IdeaSummaryTypes, IdeaTypes } from "../constants/types";
 import Mini_Idea from "./Mini_Idea";
 interface Props {
     colorTheme: string;
@@ -33,7 +33,7 @@ const IdeaContainer = styled.div`
 interface FProps {
     colorTheme: string;
     title: string;
-    ideas: IdeaTypes[];
+    ideas: IdeaSummaryTypes[];
 }
 const TimelineBar = ({colorTheme, title, ideas}: FProps) => {
   return (

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { IdeaSummaryTypes } from "../constants/types";
 import IdeaPopUp from "./IdeaPopUp";
 import PopUp from "./PopUp";
 
@@ -83,25 +84,11 @@ const Comments = styled.div`
 `;
 interface FProps {
 	colorTheme: string;
-	idea: {
-		AuthorId: string|null;
-		Cons: Array<string>|null;
-		Description: string;
-		Evaluation: Array<any> | null;
-		Pros: Array<string>|null;
-		ROI: Array<any> | null;
-		Stage: string;
-		StageStatus: boolean;
-		TeamId: string | null;
-		Title: string;
-		id: string;
-	};
+	idea: IdeaSummaryTypes;
 }
 const Mini_Idea = ({ colorTheme, idea }: FProps) => {
 	const [ideaDetails, setIdeaDetails] = useState({
 		title: idea.Title,
-		description: idea.Description,
-		ideaId: idea.id,
 	});
 	const [showPopUp, setShowPopUp] = useState(false);
 	return (

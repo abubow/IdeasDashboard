@@ -20,6 +20,7 @@ export function AllIdeasProvider({ children }: Props) {
         TeamId: null,
         Title: '',
         id: '',
+        Comments: null,
     }]);
     const ideasCollectionRef = collection(db, 'Ideas');
     useEffect(
@@ -35,7 +36,7 @@ export function AllIdeasProvider({ children }: Props) {
 
     const addIdeaToDatabase = async (idea: IdeaTypes) => {
         const ideaRef = await addDoc(ideasCollectionRef, idea);
-        console.log(ideaRef);
+        return ideaRef;
     }
     return (
         <AllIdeasContext.Provider value={{ allIdeas, setAllIdeas, addIdeaToDatabase }}>

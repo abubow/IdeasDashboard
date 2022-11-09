@@ -1,5 +1,7 @@
 import { Key, useEffect, useState } from "react";
 import styled from "styled-components";
+import { IdeaSummaryTypes } from "../constants/types";
+import { useAllIdeasSummaries } from "../contexts/allIdeaSumContext";
 import { useAllIdeas } from "../contexts/ideasContext";
 import Mini_Idea from "./Mini_Idea";
 interface Props {
@@ -41,15 +43,15 @@ interface IdeaTypes {
     AuthorId: string | null; Cons: string[] | null; Description: string; Evaluation: any[] | null; Pros: string[] | null; ROI: any[] | null; Stage: string; StageStatus: boolean; TeamId: string | null; Title: string; id: string; 
 }
 const AllIdeas = ({colorTheme}: Props) => {
-    const allIdeas : any = useAllIdeas();
+    const allIdeaSummaries : any = useAllIdeasSummaries();
     return (
         <Container colorTheme={colorTheme}>
             <Title colorTheme={colorTheme}>
-                All Ideas ({allIdeas? allIdeas.length : 0})
+                All Ideas ({allIdeaSummaries? allIdeaSummaries.length : 0})
             </Title>
             <IdeaContainer>
                 {
-                    allIdeas.allIdeas?.map((idea : IdeaTypes , index: Key | null | undefined) => {
+                    allIdeaSummaries.allIdeaSummaries?.map((idea : IdeaSummaryTypes , index: Key | null | undefined) => {
                         console.log(idea)
                         return (
                             <Mini_Idea colorTheme={colorTheme} idea={idea} key={index}/>

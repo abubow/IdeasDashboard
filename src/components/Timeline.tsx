@@ -3,6 +3,7 @@ import TimelineBar from "./TimelineBar";
 import { useAllIdeas } from "../contexts/ideasContext";
 import { IdeaTypes } from "../constants/types";
 import { useEffect } from "react";
+import { useAllIdeasSummaries } from "../contexts/allIdeaSumContext";
 const Container = styled.div`
 	position: relative;
 	display: flex;
@@ -45,25 +46,25 @@ const Timeline = ({ colorTheme }: Props) => {
 			title: "ROI Identified",
 		},
 	];
-    const allIdeas:any = useAllIdeas();
+    const allIdeas:any = useAllIdeasSummaries();
 	const ideasCategorized = [
 		{
 			title: "Thought",
-			ideas: allIdeas.allIdeas.filter((idea: IdeaTypes) => idea.Stage === "Thought"),
+			ideas: allIdeas?.allIdeaSummaries!==null &&allIdeas?.allIdeaSummaries.filter((idea: IdeaTypes) => idea.Stage === "Thought"),
 		},
 		{
 			title: "Brainstormed",
-			ideas: allIdeas.allIdeas.filter(
+			ideas:  allIdeas?.allIdeaSummaries!==null &&allIdeas?.allIdeaSummaries.filter(
 				(idea: IdeaTypes) => idea.Stage === "Brainstormed"
 			),
 		},
 		{
 			title: "Evaluated",
-			ideas: allIdeas.allIdeas.filter((idea: IdeaTypes) => idea.Stage === "Evaluated"),
+			ideas:  allIdeas?.allIdeaSummaries!==null &&allIdeas?.allIdeaSummaries.filter((idea: IdeaTypes) => idea.Stage === "Evaluated"),
 		},
 		{
 			title: "ROI Identified",
-			ideas: allIdeas.allIdeas.filter(
+			ideas:  allIdeas?.allIdeaSummaries!==null &&allIdeas?.allIdeaSummaries.filter(
 				(idea: IdeaTypes) => idea.Stage === "ROI Identified"
 			),
 		},
@@ -78,7 +79,9 @@ const Timeline = ({ colorTheme }: Props) => {
 
 	return (
 		<Container>
-			{TimelineBars.map((bar, index) => {
+			{
+				allIdeas?.allIdeaSummaries!==null? (
+			TimelineBars.map((bar, index) => {
 				return (
 					<div key={index}>
 						<TimelineBar
@@ -93,7 +96,13 @@ const Timeline = ({ colorTheme }: Props) => {
 						/>
 					</div>
 				);
-			})}
+			})
+			) : (
+				<div>
+					<h1>No Ideas</h1>
+				</div>
+			)
+		}
 		</Container>
 	);
 };

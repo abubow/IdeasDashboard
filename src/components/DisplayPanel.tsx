@@ -7,6 +7,7 @@ import useOptionSelected from "../contexts/optionsContext";
 import NewIdea from "./NewIdea";
 import SettingsPopup from "./SettingsPopup";
 import { useTheme } from "../contexts/themeContext";
+import { AllIdeasProvider } from "../contexts/ideasContext";
 
 interface Props {
     colorTheme: string;
@@ -78,31 +79,33 @@ const DisplayPanel = () => {
     const [settingsOpen, setSettingsOpen] = useState(false);
     const { colorTheme, setColorTheme } = useTheme();
     return (
-        <Container colorTheme={colorTheme}>
-            <TopBar colorTheme={colorTheme}>
-            <Title colorTheme={colorTheme}>
-                Welcome Back, {
-                    user?.displayName.split(' ')[0]
-                }👋
-            </Title>
-            <ProfileContainer colorTheme={colorTheme}>
-                <Username colorTheme={colorTheme}>
-                    {
-                        user?.displayName
-                    }
-                </Username>
-                <Profile src="https://avatars.githubusercontent.com/u/47056243?v=4" colorTheme={colorTheme} onClick={() => setSettingsOpen(true)}/>
-            </ProfileContainer>
-            {
-                settingsOpen ? <SettingsPopup colorTheme={colorTheme} setSettingsOpen={setSettingsOpen}/> : null
-            }
-            </TopBar>
-            {
-                optionSelected === 'Projects' ? <Timeline colorTheme={colorTheme}/> : 
-                optionSelected == 'New Idea' ? <NewIdea colorTheme={colorTheme}/> :
-                <AllIdeas colorTheme={colorTheme}/>
-            }
-        </Container>
+        <AllIdeasProvider>
+            <Container colorTheme={colorTheme}>
+                <TopBar colorTheme={colorTheme}>
+                <Title colorTheme={colorTheme}>
+                    Welcome Back, {
+                        user?.displayName.split(' ')[0]
+                    }👋
+                </Title>
+                <ProfileContainer colorTheme={colorTheme}>
+                    <Username colorTheme={colorTheme}>
+                        {
+                            user?.displayName
+                        }
+                    </Username>
+                    <Profile src="https://avatars.githubusercontent.com/u/47056243?v=4" colorTheme={colorTheme} onClick={() => setSettingsOpen(true)}/>
+                </ProfileContainer>
+                {
+                    settingsOpen ? <SettingsPopup colorTheme={colorTheme} setSettingsOpen={setSettingsOpen}/> : null
+                }
+                </TopBar>
+                {
+                    optionSelected === 'Projects' ? <Timeline colorTheme={colorTheme}/> : 
+                    optionSelected == 'New Idea' ? <NewIdea colorTheme={colorTheme}/> :
+                    <AllIdeas colorTheme={colorTheme}/>
+                }
+            </Container>
+        </AllIdeasProvider>
     );
 }
 

@@ -7,6 +7,7 @@ import IdeaPopUp from '../components/IdeaPopUp';
 import { OptionsSelectedProvider } from '../contexts/optionsContext';
 import { AllIdeasProvider } from '../contexts/ideasContext';
 import { ColorContext, ThemeProvider } from '../contexts/themeContext';
+import { AllIdeasSummariesProvider } from '../contexts/allIdeaSumContext';
 
 interface Props {
     color: string;
@@ -52,9 +53,9 @@ const Dashboard = (props: PropsF) => {
                 <OptionsSelectedProvider>
                     <>
                         <Options color={colors.options} content={OptionsContent} />
-                        <AllIdeasProvider>
+                        <AllIdeasSummariesProvider>
                             <DisplayPanel />
-                        </AllIdeasProvider>
+                        </AllIdeasSummariesProvider>
                     </>
                 </OptionsSelectedProvider>
             </Container>
