@@ -125,7 +125,6 @@ const Button = styled.button<Props>`
 	transition: all 0.5s ease;
 `;
 interface CommentFormProps extends Props {
-    ideaId: string;
 	setCommentOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const CommentForm = ({
