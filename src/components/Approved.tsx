@@ -1,7 +1,8 @@
-import { Key } from "react";
+import { Key, useEffect, useState } from "react";
 import styled from "styled-components";
 import { IdeaSummaryTypes } from "../constants/types";
 import { useAllIdeasSummaries } from "../contexts/allIdeaSumContext";
+import { useAllIdeas } from "../contexts/ideasContext";
 import Mini_Idea from "./Mini_Idea";
 interface Props {
     colorTheme: string;
@@ -20,14 +21,6 @@ const Container = styled.div<Props>`
     padding: 1vh 1vw;
     overflow-y: auto;
 `;
-const Title = styled.div<Props>`
-    font-size: 0.8rem;
-    font-weight: 400;
-    color: ${props => props.colorTheme === 'light' ? 'rgba(28,29,34, 0.5)': 'rgba(255, 255, 255, 0.5)'};
-    padding-left: 1vw;
-    margin: 1vh 0 1vh 0.2vw;
-    align-self: flex-start;
-`;
 const IdeaContainer = styled.div`
     display: flex;
     justify-content: flex-center;
@@ -37,18 +30,29 @@ const IdeaContainer = styled.div`
     border-radius: 10px;
     padding-left: 1vw;
 `;
+const Title = styled.div<Props>`
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: ${props => props.colorTheme === 'light' ? 'rgba(28,29,34, 0.5)': 'rgba(255, 255, 255, 0.5)'};
+    padding-left: 1vw;
+    margin: 1vh 0 1vh 0.2vw;
+    align-self: flex-start;
+`;
 
-const Done = ({colorTheme}: Props) => {
+interface IdeaTypes {
+    AuthorId: string | null; Cons: string[] | null; Description: string; Evaluation: any[] | null; Pros: string[] | null; ROI: any[] | null; Stage: string; StageStatus: boolean; TeamId: string | null; Title: string; id: string; 
+}
+const Approved = ({colorTheme}: Props) => {
     const allIdeas : any = useAllIdeasSummaries();
     return (
         <Container colorTheme={colorTheme}>
             <Title colorTheme={colorTheme}>
-                Done ({allIdeas? allIdeas.length : 0})
+                Approved Ideas ({allIdeas? allIdeas.length : 0})
             </Title>
             <IdeaContainer>
                 {
                     allIdeas.allIdeaSummaries?.map((idea : IdeaSummaryTypes , index: Key | null | undefined) => {
-                        if(idea.Stage === 'Done'){
+                        if(idea.Stage === 'Approved'){
                           return (
                               <Mini_Idea colorTheme={colorTheme} idea={idea} key={index}/>
                           )
@@ -60,4 +64,4 @@ const Done = ({colorTheme}: Props) => {
     )
 }
 
-export default Done
+export default Approved

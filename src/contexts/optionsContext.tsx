@@ -5,7 +5,7 @@ type Props = {
     children: JSX.Element,  
     };
 export function OptionsSelectedProvider({ children }: Props) {
-    const [optionSelected, setOptionSelected] = useState('Projects');
+    const [optionSelected, setOptionSelected] = useState('Ideas');
     return (
         <OptionSelectedContext.Provider value={{ optionSelected, setOptionSelected }}>
             {children}

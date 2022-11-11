@@ -129,6 +129,20 @@ interface PropsF {
 const Options = ({ content, color }: PropsF) => {
 	const { optionSelected, setOptionSelected }: any = useOptionSelected();
 	const { colorTheme, setColorTheme } = useTheme();
+	const checkIfExpanded = (option: string, subOptions: string[], selected: string) => {
+		if (option === selected) {
+			return true;
+		} else {
+			let found = false;
+			subOptions.forEach((subOption) => {
+				if (subOption === selected) {
+					found = true;
+				}
+			}
+			);
+			return found;
+		}
+	};
 	return (
 		<Container
 			colorTheme={colorTheme}
@@ -146,10 +160,7 @@ const Options = ({ content, color }: PropsF) => {
 									}}
 									style={{
 										opacity:
-											(optionSelected === option.name) ||
-											(option.subOptions.includes(
-                                                optionSelected
-                                            ))
+											checkIfExpanded(option.name, option.subOptions, optionSelected)
 												? 1
 												: 0.5,
 										fontWeight:
@@ -167,8 +178,11 @@ const Options = ({ content, color }: PropsF) => {
 											xmlns="http://www.w3.org/2000/svg"
 											style={{
 												transform:
-													optionSelected ===
-													option.name
+													checkIfExpanded(
+														option.name,
+														option.subOptions,
+														optionSelected
+													)
 														? "rotate(0deg)"
 														: "rotate(90deg)",
 											}}>
@@ -189,11 +203,11 @@ const Options = ({ content, color }: PropsF) => {
 								<SubOptions
 									style={{
 										opacity:
-											optionSelected === option.name
+											checkIfExpanded(option.name, option.subOptions, optionSelected)
 												? 0.5
 												: 0,
 										maxHeight:
-											optionSelected === option.name
+											checkIfExpanded(option.name, option.subOptions, optionSelected)
 												? "100%"
 												: "0",
 										overflow: "hidden",
@@ -203,6 +217,18 @@ const Options = ({ content, color }: PropsF) => {
 											return (
 												<OptionLi
 													key={index}
+													style={
+														{
+															opacity:
+																optionSelected === subOption
+																	? 1
+																	: 0.7,
+															fontWeight:
+																optionSelected === subOption
+																	? 600
+																	: 300,
+														}
+													}
 													onClick={() => {
 														setOptionSelected(
 															subOption
