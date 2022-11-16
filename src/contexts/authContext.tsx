@@ -60,8 +60,6 @@ export function UserAuthProvider({ children }: Props) {
 	useEffect(() => {
 		setLoading(true);
 		onAuthStateChanged(auth, (userC) => {
-			console.log("AuthUSER: ");
-			console.log(userC);
 			if (userC) {
 				setUser(userC);
 

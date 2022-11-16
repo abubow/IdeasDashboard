@@ -53,7 +53,6 @@ export function AllIdeasSummariesProvider({ children }: Props) {
 
 	const addIdeaSummaryToDatabase = async (idea: IdeaSummaryTypes) => {
 		const ideaRef = await addDoc(ideasCollectionRef, idea);
-		console.log(ideaRef);
 	};
 	if (loading) {
 		return (

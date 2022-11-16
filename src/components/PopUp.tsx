@@ -109,10 +109,8 @@ const PopUp = ({ colorTheme, idea, setShowPopUp }: FPProps) => {
             setIdeaOutlineLoading(true);
             setIdeaOutlineError(false);
 			try {
-                console.log(idea.IdeaOutline);
                 const docRef = doc(db, "Ideas", idea.IdeaOutline);
 				const ideaOutline = await getDoc(docRef);
-                console.log("ideaOutline", ideaOutline.data());
                 if (ideaOutline.data()!==undefined) {
                     setIdeaOutline(ideaOutline.data() as IdeaTypes);
                 }

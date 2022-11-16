@@ -69,12 +69,6 @@ const Timeline = ({ colorTheme }: Props) => {
 			),
 		},
 	];
-	useEffect(
-		() => {
-			console.table(ideasCategorized);
-		},
-		[allIdeas]
-	)
 
 
 	return (
