@@ -52,7 +52,6 @@ const AllIdeas = ({colorTheme}: Props) => {
             <IdeaContainer>
                 {
                     allIdeaSummaries.allIdeaSummaries?.map((idea : IdeaSummaryTypes , index: Key | null | undefined) => {
-                        console.log(idea)
                         return (
                             <Mini_Idea colorTheme={colorTheme} idea={idea} key={index}/>
                         )
