@@ -1,5 +1,3 @@
-import { DocumentReference } from "firebase/firestore";
-
 export interface newIdeaTypes {
 	AuthorId: string | null;
 	Cons: string[] | null;
@@ -29,3 +27,12 @@ export interface IdeaTypes extends newIdeaTypes {
 export interface IdeaSummaryTypes extends newIdeaSummaryTypes {
 	id: string;
 }
+
+export type UserDetailsTypes = {
+	Admin: boolean;
+	DefaultMode: string;
+	FirstName: string;
+	LastName: string;
+	UserID: string;
+	pfpPath: string;
+};

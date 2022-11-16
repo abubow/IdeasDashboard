@@ -3,6 +3,7 @@ import { useState } from "react";
 import { IdeaTypes } from "../constants/types";
 import parse from "html-react-parser";
 import CommentsList from "./CommentsList";
+import ROI from "./ROI";
 
 interface Props {
 	colorTheme: string;
@@ -178,9 +179,7 @@ const TabsC = ({ idea, colorTheme }: FProps) => {
 						</>
 					) : item.id === "3" ? (
 						<>
-							<Description colorTheme={colorTheme}>
-								{idea.ROI ? idea.ROI : "No ROI provided yet"}
-							</Description>
+							<ROI ROIarray={idea.ROI} />
 						</>
 					) : (
 						<>

@@ -1,7 +1,13 @@
+import { async } from "@firebase/util";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useTheme } from "../contexts/themeContext";
 import ToggleSwitch from "./ToggleSwitch";
+import { auth, storage } from "../firebase-config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uuid";
+import { updateProfile } from "firebase/auth";
+import useUserAuth from "../contexts/authContext";
 const Container = styled.div`
 	position: fixed;
 	top: 0;
@@ -209,12 +215,13 @@ const DefaultText = styled.span<Props>`
 	}
 `;
 const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
-    const [darkTheme, setDarkTheme] = useState(colorTheme === "dark");
+    const [darkTheme, setDarkTheme] = useState<boolean>(colorTheme === "dark");
 	const { setColorTheme } = useTheme();
-	const [newUserName, setNewUserName] = useState("username");
-	const [newFirstName, setNewFirstName] = useState("firstname");
-	const [newLastName, setNewLastName] = useState("lastname");
-
+	const [newUserName, setNewUserName] = useState<string>("username");
+	const [newFirstName, setNewFirstName] = useState<string>("firstname");
+	const [newLastName, setNewLastName] = useState<string>("lastname");
+	const [image, setImage] = useState<any|null>(null);
+	const {user} : any= useUserAuth();
     useEffect(
         () => {
             if (darkTheme) {
@@ -225,10 +232,49 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
         },
         [darkTheme]
     )
+	useEffect(() => {
+		if (user) {
+			setNewUserName(user.displayName);
+		}
+	}, [user]);
 	const [editing, setEditing] = useState([false, false, false]);
 	const closeHandler = () => {
 		setSettingsOpen(false);
 	};
+	const uploadImage = async () => {
+		if (!!image) {
+			const imageName : string = v4() + image.name;
+			const imageRef = ref(storage, `UserProfilePictures/${imageName}`);
+			await uploadBytes(imageRef, image).then(
+				(snapshot) => {
+					console.log("Uploaded a blob or file!");
+					//print the download url
+					getDownloadURL(imageRef).then((url) => {
+						console.log(url);
+						//set the image url to the user
+						if (auth.currentUser) {
+							updateProfile(auth.currentUser, {
+								photoURL: url,
+							}).then(() => {
+								console.log("updated profile");
+							}
+							);
+						}
+					});
+				}
+			);
+		}
+	}
+	const updateProfileDetails = async () => {
+		if (auth.currentUser) {
+			await updateProfile(auth.currentUser, {
+				displayName: newUserName,
+				photoURL: auth.currentUser.photoURL,
+			}).then(() => {
+				console.log("updated profile");
+			});
+		}
+	}
 	return (
 		<Container>
 			<Crate colorTheme={colorTheme}>
@@ -243,6 +289,14 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 						<input
 							type="file"
 							id="file"
+							onChange={
+								(e) => {
+									if(e.target){
+										setImage((e.target as HTMLInputElement).files![0]);
+										console.log((e.target as HTMLInputElement).files![0]);
+									}
+								}
+							}
 							style={{ display: "none" }}
 						/>
 						<ClickableSvg

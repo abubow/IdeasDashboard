@@ -7,8 +7,10 @@ import {
 	updateProfile,
 	onAuthStateChanged,
 } from "firebase/auth";
-import { auth } from "../firebase-config";
+import { auth, db } from "../firebase-config";
 import styled, { keyframes } from "styled-components";
+import { UserDetailsTypes } from "../constants/types";
+import { collection } from "firebase/firestore";
 export const userAuthContext = createContext({});
 
 const dotCarousel = keyframes`
@@ -41,6 +43,8 @@ type Props = {
 export function UserAuthProvider({ children }: Props) {
 	const [user, setUser] = useState({});
 	const [loading, setLoading] = useState(true);
+	const [userDetails, setUserDetails] = useState<UserDetailsTypes | null>(null);
+	const userDetailsCollectionRef = collection(db, "UserInfo");
 	function logIn(email: string, password: string) {
 		return signInWithEmailAndPassword(auth, email, password);
 	}
@@ -50,6 +54,9 @@ export function UserAuthProvider({ children }: Props) {
 	function signUp(email: string, password: string) {
 		return createUserWithEmailAndPassword(auth, email, password);
 	}
+	function getUserDetails() {
+		return userDetails;
+	}
 	useEffect(() => {
 		setLoading(true);
 		onAuthStateChanged(auth, (userC) => {
@@ -57,6 +64,7 @@ export function UserAuthProvider({ children }: Props) {
 			console.log(userC);
 			if (userC) {
 				setUser(userC);
+
 			} else {
 				setUser({});
 			}

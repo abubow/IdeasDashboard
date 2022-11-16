@@ -10,6 +10,8 @@ import { useTheme } from "../contexts/themeContext";
 import { AllIdeasProvider } from "../contexts/ideasContext";
 import Done from "./Done";
 import Approved from "./Approved";
+import InProgress from "./InProgress";
+import InitialStage from "./InitialStage";
 
 interface Props {
 	colorTheme: string;
@@ -125,6 +127,10 @@ const DisplayPanel = () => {
 					<AllIdeas colorTheme={colorTheme} />
 				) : optionSelected == "Done" ? (
 					<Done colorTheme={colorTheme} />
+				) : optionSelected == "In Progress" ? (
+					<InProgress colorTheme={colorTheme} />
+				) : optionSelected == "Initial Stage" ? (
+					<InitialStage colorTheme={colorTheme} />
 				) : (
                     <Approved colorTheme={colorTheme} />
                 )
