@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface newIdeaTypes {
 	AuthorId: string | null;
 	Cons: string[] | null;
@@ -36,3 +38,15 @@ export type UserDetailsTypes = {
 	UserID: string;
 	pfpPath: string;
 };
+export type CommentSummaryTypes = {
+	body: string;
+	PostDate: Timestamp;
+	AuthorId: string;
+};
+export type CommentT = {
+	id: number;
+	username: string;
+	avatar: string;
+	date: string;
+	body: string;
+}

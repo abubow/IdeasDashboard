@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import { CommentT } from "../constants/types";
 
 interface Props {
     colorTheme: string;
@@ -76,22 +75,28 @@ const CommentContainer = styled.div<Props>`
         color: ${props => props.colorTheme === 'light' ? '#000' : '#fff'};
     }
 `
-export interface CommentProps extends Props {
-    comment: CommentT|null;
+interface CommentProps extends Props {
+    comment: {
+        id: number;
+        username: string;
+        avatar: string;
+        date: string;
+        body: string;
+    }
 }
 const Comment = ({ colorTheme, comment }: CommentProps) => {
   return (
     <CommentContainer colorTheme={colorTheme}>
       <div className="comment-header">
         <div className="comment-header-left">
-          <img className="comment-avatar" src={comment?.avatar} alt="" />
-          <p className="comment-username">{comment?.username}</p>
+          <img className="comment-avatar" src={comment.avatar} alt="" />
+          <p className="comment-username">{comment.username}</p>
         </div>
         <div className="comment-header-right">
-          <p className="comment-date">{comment?.date}</p>
+          <p className="comment-date">{comment.date}</p>
         </div>
       </div>
-      <p className="comment-body">{comment?.body}</p>
+      <p className="comment-body">{comment.body}</p>
     </CommentContainer>
   );
 }

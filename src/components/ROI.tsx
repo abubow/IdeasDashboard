@@ -1,5 +1,6 @@
 import { User } from "firebase/auth";
 import styled from "styled-components";
+import CommentsList from "./RoiCommentList";
 const Container = styled.div`
 	width: 100%;
 	height: 100%;
@@ -52,14 +53,7 @@ const ROI = ({ ROIarray }: ROIProps) => {
 	return (
 		<Container>
 			<h2>ROI</h2>
-			<ROIsContainer>
-				{ROIarray?.map((ROI) => (
-					<ROIc key={ROI.uid}>
-						<Pfp src={ROI.pfpPath} />
-						<Name>{ROI.displayName}</Name>
-					</ROIc>
-				))}
-			</ROIsContainer>
+			<CommentsList />
 		</Container>
 	);
 };

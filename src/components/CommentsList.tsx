@@ -1,5 +1,9 @@
-import { useState } from "react";
-import styled from "styled-components";
+import { collection, doc, getDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
+import { CommentSummaryTypes, CommentT, UserDetailsTypes } from "../constants/types";
+import { db } from "../firebase-config";
+import CommentProps from "./Comment";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
 
@@ -47,67 +51,95 @@ const Button = styled.button<Props>`
 	opacity: 0.8;
 	transition: all 0.5s ease;
 `;
-
-const CommentsList = ({ colorTheme }: Props) => {
-	const allComments = [
-		{
-			id: 1,
-			username: "John Doe",
-			avatar: "https://i.pravatar.cc/150?img=1",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 2,
-			username: "Jane Doe",
-			avatar: "https://i.pravatar.cc/150?img=2",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 3,
-			username: "Jack Doe",
-			avatar: "https://i.pravatar.cc/150?img=3",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 4,
-			username: "Jill Doe",
-			avatar: "https://i.pravatar.cc/150?img=4",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 5,
-			username: "Jim Doe",
-			avatar: "https://i.pravatar.cc/150?img=5",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 6,
-			username: "Jenny Doe",
-			avatar: "https://i.pravatar.cc/150?img=6",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 7,
-			username: "Jax Doe",
-			avatar: "https://i.pravatar.cc/150?img=7",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 8,
-			username: "Jon Doe",
-			avatar: "https://i.pravatar.cc/150?img=8",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-	];
+const dotCarousel = keyframes`
+	0% {
+		box-shadow: 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff;
+	}
+	50% {
+		box-shadow: 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff;
+	}
+	100% {
+		box-shadow: 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff;
+	}
+`;
+const LoadingDots = styled.div`
+	position: relative;
+	left: -9999px;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #9880ff;
+	color: #9880ff;
+	box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff,
+		10014px 0 0 0 #9880ff;
+	animation: ${dotCarousel} 1.5s infinite linear;
+`;
+interface FProps extends Props {
+	ideaCommentsList: Array<string> | null;
+}
+const CommentsList = ({ colorTheme, ideaCommentsList }: FProps) => {
+	const [allComments, setAllComments] = useState<CommentT[]|null>();
 	const [commentOpen, setCommentOpen] = useState(false);
+	const [loading, setLoading] = useState(true);
+	
+	const commentsCollectionRef = collection(db, "Comments");
+	const userDetailsCollectionRef = collection(db, "UserInfo");
+	useEffect(
+		() => {
+			const getComments = async () => {
+				setLoading(true);
+				const commentsArray: CommentT[] = [];
+				ideaCommentsList?.forEach(async (commentId) => {
+					const commentDoc = doc(commentsCollectionRef, commentId);
+					const commentData = await getDoc(commentDoc);
+					const comment= commentData.data() as CommentSummaryTypes;
+					// get user details from authorId
+					const userDetailsDoc = doc(userDetailsCollectionRef, comment.AuthorId);
+					const userDetailsData = await getDoc(userDetailsDoc);
+					const userDetails = userDetailsData.data() as UserDetailsTypes;
+					console.table( userDetails !== undefined ? userDetails : "undefined user" + comment.AuthorId);
+					const commentObj: CommentT = {
+						id: parseInt(commentId),
+						username: userDetails?.FirstName + " " + userDetails?.LastName,
+						avatar: userDetails?.pfpPath,
+						body: comment?.body,
+						// convert timestamp to date
+						date: comment?.PostDate.toDate().toDateString(),	
+					};
+					commentsArray.push(commentObj);
+				});
+				console.log(commentsArray);
+				console.log(ideaCommentsList);
+				setAllComments(commentsArray);
+				setLoading(false);
+			}
+			getComments();
+		}, []
+	);
+	if (loading) {
+		return <div 
+		style={
+			{
+				width: "100%",
+				height: "100vh",
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+			}
+		}>
+
+			<div
+				style={{
+					position: "absolute",
+					top: "50%",
+					left: "50%",
+					transform: "translate(-50%, -50%)",
+				}}>
+				<LoadingDots />
+			</div>
+	</div>
+	}
+
 	return (
 		<Container>
 			<ButtonCrate>
@@ -117,7 +149,6 @@ const CommentsList = ({ colorTheme }: Props) => {
 					{commentOpen ? "Close" : "Create"}
 				</Button>
 			</ButtonCrate>
-
 			<CommentsContainer>
 				{commentOpen ? (
 					<CommentForm
@@ -125,9 +156,9 @@ const CommentsList = ({ colorTheme }: Props) => {
 						setCommentOpen={setCommentOpen}
 					/>
 				) : null}
-				{allComments.map((comment) => (
+				{allComments?.map((comment, index) => (
 					<Comment
-						key={comment.id}
+						key={index}
 						comment={comment}
 						colorTheme={colorTheme}
 					/>

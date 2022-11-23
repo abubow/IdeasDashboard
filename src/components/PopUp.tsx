@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Tabs from "./Tabs";
 import TabsC from "./TabsC";
 import { useEffect, useState } from "react";
@@ -91,6 +91,29 @@ const Button = styled.button<Props>`
 	box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
 	transition: all 0.5s ease;
 `;
+const dotCarousel = keyframes`
+	0% {
+		box-shadow: 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff;
+	}
+	50% {
+		box-shadow: 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff;
+	}
+	100% {
+		box-shadow: 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff;
+	}
+`;
+const LoadingDots = styled.div`
+	position: relative;
+	left: -9999px;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #9880ff;
+	color: #9880ff;
+	box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff,
+		10014px 0 0 0 #9880ff;
+	animation: ${dotCarousel} 1.5s infinite linear;
+`;
 interface FPProps {
 	colorTheme: string;
 	idea: IdeaSummaryTypes;
@@ -106,23 +129,21 @@ const PopUp = ({ colorTheme, idea, setShowPopUp }: FPProps) => {
 
 	useEffect(() => {
 		const getIdeaOutline = async () => {
-            setIdeaOutlineLoading(true);
-            setIdeaOutlineError(false);
+			setIdeaOutlineLoading(true);
+			setIdeaOutlineError(false);
 			try {
-                const docRef = doc(db, "Ideas", idea.IdeaOutline);
+				const docRef = doc(db, "Ideas", idea.IdeaOutline);
 				const ideaOutline = await getDoc(docRef);
-                if (ideaOutline.data()!==undefined) {
-                    setIdeaOutline(ideaOutline.data() as IdeaTypes);
-                }
-                else{
-                    setIdeaOutlineError(true);
-                }
+				if (ideaOutline.data() !== undefined) {
+					setIdeaOutline(ideaOutline.data() as IdeaTypes);
+				} else {
+					setIdeaOutlineError(true);
+				}
 				setIdeaOutlineLoading(false);
 			} catch (error) {
 				setIdeaOutlineError(true);
 				setIdeaOutlineLoading(false);
-                console.error(error);
-                
+				console.error(error);
 			}
 		};
 		getIdeaOutline();
@@ -130,7 +151,24 @@ const PopUp = ({ colorTheme, idea, setShowPopUp }: FPProps) => {
 	return (
 		<Container>
 			{ideaOutlineLoading || ideaOutline === null ? (
-				<div>Loading...</div>
+				<div
+					style={{
+						width: "100%",
+						height: "100vh",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+					}}>
+					<div
+						style={{
+							position: "absolute",
+							top: "50%",
+							left: "50%",
+							transform: "translate(-50%, -50%)",
+						}}>
+						<LoadingDots />
+					</div>
+				</div>
 			) : ideaOutlineError ? (
 				<div>Error</div>
 			) : (

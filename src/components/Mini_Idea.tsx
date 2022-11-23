@@ -121,7 +121,7 @@ const Mini_Idea = ({ colorTheme, idea }: FProps) => {
 								/>
 							</svg>
 							<AttachmentCount colorTheme={colorTheme}>
-								{0}
+								{idea.Attachments}
 							</AttachmentCount>
 						</Attachments>
 						<Comments>
@@ -141,7 +141,7 @@ const Mini_Idea = ({ colorTheme, idea }: FProps) => {
 								/>
 							</svg>
 							<CommentCount colorTheme={colorTheme}>
-								{0}
+								{idea.Comments}
 							</CommentCount>
 						</Comments>
 					</MetaContainer>

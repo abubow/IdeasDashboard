@@ -43,7 +43,7 @@ const Done = ({colorTheme}: Props) => {
     return (
         <Container colorTheme={colorTheme}>
             <Title colorTheme={colorTheme}>
-                Done ({allIdeas? allIdeas.length : 0})
+                Done ({allIdeas.allIdeaSummaries?.filter((idea: IdeaSummaryTypes) => idea.Stage === 'done').length})
             </Title>
             <IdeaContainer>
                 {

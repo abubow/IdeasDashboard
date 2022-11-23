@@ -7,8 +7,8 @@ interface Props {
 const CommentContainer = styled.form<Props>`
     background: ${(props) =>
 		props.colorTheme === "light"
-			? "rgba(28,29,34, 0.005)"
-			: "rgba(255, 255, 255, 0.01)"};
+			? "rgba(28,29,34, 0.05)"
+			: "rgba(255, 255, 255, 0.1)"};
     backdrop-filter: blur(10px);
     border-radius: 10px;
     padding: 1vh 1vw;
@@ -155,7 +155,7 @@ const CommentForm = ({
 			<div className="comment-body">
 				<textarea
 					className="comment-textarea"
-					placeholder="Write a comment..."
+					placeholder="Write an ROI..."
 				/>
 				<ButtonCrate>
 					<Button

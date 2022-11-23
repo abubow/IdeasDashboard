@@ -183,7 +183,7 @@ const TabsC = ({ idea, colorTheme }: FProps) => {
 						</>
 					) : (
 						<>
-							<CommentsList colorTheme={colorTheme} />
+							<CommentsList colorTheme={colorTheme} ideaCommentsList={idea.Comments} />
 						</>
 					)}
 				</TabContent>

@@ -47,7 +47,7 @@ const Approved = ({colorTheme}: Props) => {
     return (
         <Container colorTheme={colorTheme}>
             <Title colorTheme={colorTheme}>
-                Approved Ideas ({allIdeas? allIdeas.length : 0})
+            All Approved ({allIdeas.allIdeaSummaries?.filter((idea: IdeaSummaryTypes) => idea.Stage === 'Approved').length})
             </Title>
             <IdeaContainer>
                 {
