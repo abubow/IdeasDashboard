@@ -29,7 +29,7 @@ const TabIdentifier = styled.button<TabProps>`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 5vw;
+	width: 6vw;
 	height: 3vh;
 	background-color: ${(props) =>
 		props.colorTheme === "light"
@@ -45,8 +45,18 @@ const TabIdentifier = styled.button<TabProps>`
 	outline: none;
 	cursor: pointer;
 	transition: all 0.2s ease-out;
+	overflow-x: auto;
 	&:hover {
 		opacity: 1;
+	}
+	@media (max-width: 768px) {
+		width: 25vw;
+	}
+	@media (max-width: 425px) {
+		width: 35vw;
+	}
+	@media (max-width: 1024px) {
+		width: 10vw;
 	}
 `;
 const TabContent = styled.div<TabProps>`
@@ -163,7 +173,6 @@ const TabsC = ({ idea, colorTheme }: FProps) => {
 							</Cons>
 						</>
 					) : item.id === "2" ? (
-						<>
 							<Description colorTheme={colorTheme}>
 								{idea.Evaluation
 									? parse(
@@ -176,15 +185,10 @@ const TabsC = ({ idea, colorTheme }: FProps) => {
 									  )
 									: "No evaluation yet"}
 							</Description>
-						</>
 					) : item.id === "3" ? (
-						<>
 							<ROI ROIarray={idea.ROI} />
-						</>
 					) : (
-						<>
-							<CommentsList colorTheme={colorTheme} ideaCommentsList={idea.Comments} />
-						</>
+							<CommentsList colorTheme={colorTheme} ideaCommentsList={idea.Comments} idea={idea} />
 					)}
 				</TabContent>
 			))}

@@ -1,5 +1,9 @@
+import { addDoc, arrayUnion, collection, doc, updateDoc } from "firebase/firestore";
+import { useState } from "react";
 import styled from "styled-components";
+import { IdeaTypes } from "../constants/types";
 import useUserAuth from "../contexts/authContext";
+import { db } from "../firebase-config";
 
 interface Props {
 	colorTheme: string;
@@ -88,6 +92,7 @@ const CommentContainer = styled.form<Props>`
             font-size: 0.8rem;
             font-weight: 400;
             resize: none;
+            font-family: "Roboto", sans-serif;
             margin: 0.5vh 0 0 0.5vw;
             &:focus {
                 outline: none;
@@ -126,20 +131,49 @@ const Button = styled.button<Props>`
 `;
 interface CommentFormProps extends Props {
 	setCommentOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    idea: IdeaTypes;
 }
 const CommentForm = ({
 	colorTheme = "light",
 	setCommentOpen,
+    idea,
 }: CommentFormProps) => {
     
-    const { user }:any = useUserAuth();
+    const { user, userDetails }:any = useUserAuth();
+    const [comment, setComment] = useState('');
+
+    const commentsRef = collection(db, 'Comments');
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (idea==null){
+            return;
+        }
+        const commentPost = {
+            body: comment,
+            PostDate: new Date(),
+            AuthorId: user.uid,
+        }
+        const ret = await addDoc(commentsRef, commentPost);
+        // updating the comments reference array in the idea
+        const ideaRef = collection(db, 'Ideas');
+        const ideaDoc = doc(ideaRef, idea.id);
+        const newCommentsArray = [];
+        newCommentsArray.push(ret.id);
+        idea.Comments?.forEach((commentId: string) => {
+            newCommentsArray.push(commentId);
+        });
+        await updateDoc(ideaDoc, {
+            comments: arrayUnion(...newCommentsArray),
+        });
+        setCommentOpen(false);
+    }
 	return (
-		<CommentContainer colorTheme={colorTheme}>
+		<CommentContainer colorTheme={colorTheme} onSubmit={handleSubmit}>
 			<div className="comment-header">
 				<div className="comment-header-left">
 					<img
 						className="comment-avatar"
-						src="https://i.imgur.com/0y0tj0x.jpg"
+						src={user?.photoURL}
 						alt="avatar"
 					/>
 					<p className="comment-username">
@@ -156,6 +190,8 @@ const CommentForm = ({
 				<textarea
 					className="comment-textarea"
 					placeholder="Write a comment..."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
 				/>
 				<ButtonCrate>
 					<Button

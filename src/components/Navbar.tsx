@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useUserAuth  from "../contexts/authContext";
+import { useTheme } from "../contexts/themeContext";
+import SettingsPopup from "./SettingsPopup";
 
 interface Props {
 	color: string;
@@ -60,6 +63,8 @@ const LogOutCrate = styled.div`
 const Navbar = ({ color }: Props) => {
 	const {logOut}:any = useUserAuth();
 	const navigate = useNavigate();
+	const [settings, setSettings] = useState(false);
+	const {colorTheme}:any = useTheme();
 	const handleLogOut = () => {
 		logOut();
 		navigate('/');
@@ -164,7 +169,7 @@ const Navbar = ({ color }: Props) => {
 				</Icon>
 			</IconsCrate>
 			<LogOutCrate>
-				<Icon>
+				<Icon onClick={()=>setSettings(!settings)}>
 					<svg
 						width="16"
 						height="18"
@@ -197,6 +202,11 @@ const Navbar = ({ color }: Props) => {
 					</svg>
 				</Icon>
 			</LogOutCrate>
+			{
+				settings?
+				<SettingsPopup setSettingsOpen={setSettings} colorTheme={colorTheme}/>
+				:null
+			}
 		</Container>
 	);
 };

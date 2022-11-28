@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Timeline from "./Timeline";
 import useUserAuth from "../contexts/authContext";
 import AllIdeas from "./AllIdeas";
@@ -91,23 +91,30 @@ const Profile = styled.img<Props>`
 	cursor: pointer;
 `;
 const DisplayPanel = () => {
-	const { user }: any = useUserAuth();
+	const { user, userDetails }: any = useUserAuth();
 	const { optionSelected }: any = useOptionSelected();
 	const [settingsOpen, setSettingsOpen] = useState(false);
 	const { colorTheme, setColorTheme } = useTheme();
+
+	useEffect(() => {
+		if (userDetails) {
+			setColorTheme(userDetails?.DefaultMode);
+			console.log("set theme to ", userDetails?.DefaultMode);
+		}
+	}, [userDetails]);
 	return (
 		<AllIdeasProvider>
 			<Container colorTheme={colorTheme}>
 				<TopBar colorTheme={colorTheme}>
 					<Title colorTheme={colorTheme}>
-						Welcome Back, {user?.displayName.split(" ")[0]}👋
+						Welcome Back, {user?.displayName.split(" ")[0]} 👋
 					</Title>
 					<ProfileContainer colorTheme={colorTheme}>
 						<Username colorTheme={colorTheme}>
 							{user?.displayName}
 						</Username>
 						<Profile
-							src="https://firebasestorage.googleapis.com/v0/b/ideasdashboard-9b951.appspot.com/o/user.png?alt=media&token=d0181124-5dbd-4075-83be-ce75c7345915"
+							src={user?.photoURL}
 							colorTheme={colorTheme}
 							onClick={() => setSettingsOpen(true)}
 						/>

@@ -1,7 +1,7 @@
 import { collection, doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { CommentSummaryTypes, CommentT, UserDetailsTypes } from "../constants/types";
+import { CommentSummaryTypes, CommentT, IdeaTypes, UserDetailsTypes } from "../constants/types";
 import { db } from "../firebase-config";
 import CommentProps from "./Comment";
 import Comment from "./Comment";
@@ -76,8 +76,9 @@ const LoadingDots = styled.div`
 `;
 interface FProps extends Props {
 	ideaCommentsList: Array<string> | null;
+	idea: IdeaTypes;
 }
-const CommentsList = ({ colorTheme, ideaCommentsList }: FProps) => {
+const CommentsList = ({ colorTheme, ideaCommentsList, idea }: FProps) => {
 	const [allComments, setAllComments] = useState<CommentT[]|null>();
 	const [commentOpen, setCommentOpen] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -108,8 +109,6 @@ const CommentsList = ({ colorTheme, ideaCommentsList }: FProps) => {
 					};
 					commentsArray.push(commentObj);
 				});
-				console.log(commentsArray);
-				console.log(ideaCommentsList);
 				setAllComments(commentsArray);
 				setLoading(false);
 			}
@@ -154,6 +153,7 @@ const CommentsList = ({ colorTheme, ideaCommentsList }: FProps) => {
 					<CommentForm
 						colorTheme={colorTheme}
 						setCommentOpen={setCommentOpen}
+						idea={idea}
 					/>
 				) : null}
 				{allComments?.map((comment, index) => (

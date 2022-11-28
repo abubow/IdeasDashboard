@@ -1,14 +1,22 @@
-import { async } from "@firebase/util";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useTheme } from "../contexts/themeContext";
 import ToggleSwitch from "./ToggleSwitch";
-import { auth, storage } from "../firebase-config";
+import { auth, db, storage } from "../firebase-config";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
 import { updateProfile } from "firebase/auth";
 import useUserAuth from "../contexts/authContext";
-const Container = styled.div`
+import {
+	collection,
+	doc,
+	getDocs,
+	query,
+	setDoc,
+	updateDoc,
+	where,
+} from "firebase/firestore";
+const Container = styled.form`
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -214,24 +222,53 @@ const DefaultText = styled.span<Props>`
 		font-size: 0.8rem;
 	}
 `;
+const dotCarousel = keyframes`
+	0% {
+		box-shadow: 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff;
+	}
+	50% {
+		box-shadow: 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff;
+	}
+	100% {
+		box-shadow: 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff;
+	}
+`;
+const LoadingDots = styled.div`
+	position: relative;
+	left: -9999px;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #9880ff;
+	color: #9880ff;
+	box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff,
+		10014px 0 0 0 #9880ff;
+	animation: ${dotCarousel} 1.5s infinite linear;
+`;
 const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
-    const [darkTheme, setDarkTheme] = useState<boolean>(colorTheme === "dark");
+	const [darkTheme, setDarkTheme] = useState<boolean>(colorTheme === "dark");
 	const { setColorTheme } = useTheme();
 	const [newUserName, setNewUserName] = useState<string>("username");
 	const [newFirstName, setNewFirstName] = useState<string>("firstname");
 	const [newLastName, setNewLastName] = useState<string>("lastname");
-	const [image, setImage] = useState<any|null>(null);
-	const {user} : any= useUserAuth();
-    useEffect(
-        () => {
-            if (darkTheme) {
-                setColorTheme("dark");
-            } else {
-                setColorTheme("light");
-            }
-        },
-        [darkTheme]
-    )
+	const [image, setImage] = useState<any | null>(null);
+	const [imageUrl, setImageUrl] = useState<string>("");
+	const { user, userDetails }: any = useUserAuth();
+	const [loading, setLoading] = useState<boolean>(false);
+	useEffect(() => {
+		setNewUserName(user.username);
+		setNewFirstName(userDetails.FirstName);
+		setNewLastName(userDetails.LastName);
+		setImageUrl(user.photoURL);
+		setDarkTheme(colorTheme === "dark");
+	}, []);
+	useEffect(() => {
+		if (darkTheme) {
+			setColorTheme("dark");
+		} else {
+			setColorTheme("light");
+		}
+	}, [darkTheme]);
 	useEffect(() => {
 		if (user) {
 			setNewUserName(user.displayName);
@@ -241,62 +278,128 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 	const closeHandler = () => {
 		setSettingsOpen(false);
 	};
+	const userInfoCollectionRef = collection(db, "UserInfo");
 	const uploadImage = async () => {
 		if (!!image) {
-			const imageName : string = v4() + image.name;
+			const imageName: string = v4() + image.name;
 			const imageRef = ref(storage, `UserProfilePictures/${imageName}`);
-			await uploadBytes(imageRef, image).then(
-				(snapshot) => {
-					console.log("Uploaded a blob or file!");
-					//print the download url
-					getDownloadURL(imageRef).then((url) => {
-						console.log(url);
-						//set the image url to the user
-						if (auth.currentUser) {
-							updateProfile(auth.currentUser, {
-								photoURL: url,
-							}).then(() => {
-								console.log("updated profile");
-							}
-							);
-						}
-					});
-				}
-			);
-		}
-	}
-	const updateProfileDetails = async () => {
-		if (auth.currentUser) {
-			await updateProfile(auth.currentUser, {
-				displayName: newUserName,
-				photoURL: auth.currentUser.photoURL,
-			}).then(() => {
-				console.log("updated profile");
+			await uploadBytes(imageRef, image).then((snapshot) => {
+				console.log("Uploaded a blob or file!");
+				//print the download url
+				getDownloadURL(imageRef).then((url) => {
+					console.log(url);
+					setImageUrl(url);
+					//set the image url to the user
+					if (auth.currentUser) {
+						updateProfile(auth.currentUser, {
+							photoURL: url,
+						}).then(() => {
+							console.log("updated profile");
+						});
+					}
+					//set the image url to the database
+				});
 			});
 		}
-	}
+	};
+	const updateProfileDetails = async () => {
+		if (auth.currentUser) {
+			try {
+				await uploadImage();
+				await updateProfile(auth.currentUser, {
+					displayName:
+						newUserName !== "" ? newUserName : user.displayName,
+					photoURL: imageUrl !== "" ? imageUrl : user.photoURL,
+				}).then(async () => {
+					console.log("updated profile");
+					//update the user info collection
+					// find document where UserId == auth.currentUser.uid
+					const queryA = query(
+						userInfoCollectionRef,
+						where("UserId", "==", auth?.currentUser?.uid)
+					);
+					const querySnapshot = await getDocs(queryA);
+					querySnapshot.forEach(async (doci) => {
+						// doc.data() is never undefined for query doc snapshots
+						console.log(doci.id, " => ", doci.data());
+						//update the document
+						console.log("document ref ", doci.id.trim());
+						console.log("image url ", imageUrl);
+						const docRef = doc(db, "UserInfo", doci.id.trim());
+						await updateDoc(docRef, {
+							Admin: userDetails?.Admin,
+							DefaultMode: userDetails?.DefaultMode,
+							FirstName:
+								newFirstName !== ""
+									? newFirstName
+									: doci.data().FirstName,
+							LastName:
+								newLastName !== ""
+									? newLastName
+									: doci.data().LastName,
+							UserId: doci.data().UserId.trim(),
+						}).catch((err) => {
+							console.log(
+								"profile updated",
+								{
+									FirstName:
+										newFirstName !== ""
+											? newFirstName
+											: doci.data().FirstName,
+									LastName:
+										newLastName !== ""
+											? newLastName
+											: doci.data().LastName,
+									pfpPath:
+										imageUrl !== ""
+											? imageUrl.trim()
+											: doci.data().pfpPath.trim(),
+									UserId: doci.data().UserId.trim(),
+									Amin: userDetails?.Admin,
+								},
+								err
+							);
+						});
+					});
+				});
+				window.location.reload();
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	};
+	const onSubmit = async (e: any) => {
+		e.preventDefault();
+		setLoading(true);
+		await updateProfileDetails().then(() => {
+			closeHandler();
+		});
+		setLoading(false);
+	};
 	return (
-		<Container>
+		<Container onSubmit={onSubmit}>
 			<Crate colorTheme={colorTheme}>
 				<ProfileContainer
 					colorTheme={colorTheme}
 					color="#000">
 					<ImageContainer>
 						<Profile
-							src="https://i.imgur.com/6YQZ5Zq.jpg"
+							src={imageUrl}
 							colorTheme={colorTheme}
 						/>
 						<input
 							type="file"
 							id="file"
-							onChange={
-								(e) => {
-									if(e.target){
-										setImage((e.target as HTMLInputElement).files![0]);
-										console.log((e.target as HTMLInputElement).files![0]);
-									}
+							onChange={(e) => {
+								if (e.target) {
+									setImage(
+										(e.target as HTMLInputElement).files![0]
+									);
+									console.log(
+										(e.target as HTMLInputElement).files![0]
+									);
 								}
-							}
+							}}
 							style={{ display: "none" }}
 						/>
 						<ClickableSvg
@@ -436,13 +539,13 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 							<ClickableSvg
 								viewBox="0 0 12 12"
 								fill="none"
-                                onClick={() => {
-                                    setEditing([
-                                        editing[0],
-                                        editing[1],
-                                        !editing[2],
-                                    ]);
-                                }}  
+								onClick={() => {
+									setEditing([
+										editing[0],
+										editing[1],
+										!editing[2],
+									]);
+								}}
 								xmlns="http://www.w3.org/2000/svg">
 								<path
 									d="M9.49771 3.2093L10.2059 3.91755M10.5599 1.43869C10.6994 1.57819 10.8101 1.74381 10.8856 1.92609C10.9611 2.10838 11 2.30375 11 2.50106C11 2.69837 10.9611 2.89374 10.8856 3.07603C10.8101 3.25831 10.6994 3.42393 10.5599 3.56343L3.83257 10.2918L1 11L1.70814 8.20668L8.43833 1.44153C8.7036 1.17492 9.05941 1.01783 9.43511 1.00143C9.81082 0.985026 10.179 1.11052 10.4664 1.35299L10.5599 1.43869Z"
@@ -465,14 +568,23 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 						/>
 					</Option>
 				</Options>
-				<ButtonCrate>
-					<Button colorTheme={colorTheme}>Save</Button>
-					<Button
-						colorTheme={colorTheme}
-						onClick={closeHandler}>
-						Cancel
-					</Button>
-				</ButtonCrate>
+				{loading ? (
+					<LoadingDots
+						style={{
+							marginTop: "1rem",
+							marginBottom: "10vh",
+						}}
+					/>
+				) : (
+					<ButtonCrate>
+						<Button colorTheme={colorTheme}>Save</Button>
+						<Button
+							colorTheme={colorTheme}
+							onClick={closeHandler}>
+							Cancel
+						</Button>
+					</ButtonCrate>
+				)}
 			</Crate>
 		</Container>
 	);

@@ -10,7 +10,8 @@ import {
 import { auth, db } from "../firebase-config";
 import styled, { keyframes } from "styled-components";
 import { UserDetailsTypes } from "../constants/types";
-import { collection } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useTheme } from "./themeContext";
 export const userAuthContext = createContext({});
 
 const dotCarousel = keyframes`
@@ -44,7 +45,7 @@ export function UserAuthProvider({ children }: Props) {
 	const [user, setUser] = useState({});
 	const [loading, setLoading] = useState(true);
 	const [userDetails, setUserDetails] = useState<UserDetailsTypes | null>(null);
-	const userDetailsCollectionRef = collection(db, "UserInfo");
+	const userInfoCollectionRef = collection(db, "UserInfo");
 	function logIn(email: string, password: string) {
 		return signInWithEmailAndPassword(auth, email, password);
 	}
@@ -54,15 +55,21 @@ export function UserAuthProvider({ children }: Props) {
 	function signUp(email: string, password: string) {
 		return createUserWithEmailAndPassword(auth, email, password);
 	}
-	function getUserDetails() {
+	async function getUserDetails() {
+		//get user details from firestore where UserId === user.uid
+		const queryA = query(userInfoCollectionRef, where("UserId", "==", auth?.currentUser?.uid));
+		const querySnapshot = await getDocs(queryA);
+		querySnapshot.forEach((doc) => {
+			setUserDetails(doc.data() as UserDetailsTypes);
+		});
 		return userDetails;
 	}
 	useEffect(() => {
 		setLoading(true);
 		onAuthStateChanged(auth, (userC) => {
-			if (userC) {
+			if (userC!==null) {
 				setUser(userC);
-
+				getUserDetails();
 			} else {
 				setUser({});
 			}
@@ -83,7 +90,7 @@ export function UserAuthProvider({ children }: Props) {
 		);
 	}
 	return (
-		<userAuthContext.Provider value={{ signUp, logIn, logOut, user }}>
+		<userAuthContext.Provider value={{ signUp, logIn, logOut, user, userDetails }}>
 			{children}
 		</userAuthContext.Provider>
 	);
