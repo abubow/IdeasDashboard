@@ -12,6 +12,7 @@ export interface newIdeaTypes {
 	TeamId: string | null;
 	Title: string;
 	Comments: any[] | null;
+	comments: any[] | null;
 }
 export interface newIdeaSummaryTypes {
 	Title: string;
@@ -43,10 +44,19 @@ export type CommentSummaryTypes = {
 	PostDate: Timestamp;
 	AuthorId: string;
 };
-export type CommentT = {
+export interface CommentT  {
 	id: number;
 	username: string;
 	avatar: string;
 	date: string;
 	body: string;
+}
+export interface ROICommentT extends CommentT {
+	ROI: number;
+}
+export interface ROICommentSummaryT {
+	body: string;
+	PostDate: Timestamp;
+	AuthorId: string;
+	ROI: number;
 }

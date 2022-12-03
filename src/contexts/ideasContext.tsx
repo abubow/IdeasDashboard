@@ -8,20 +8,7 @@ type Props = {
     children: JSX.Element,
 };
 export function AllIdeasProvider({ children }: Props) {
-    const [allIdeas, setAllIdeas] = useState<[IdeaTypes]>([{
-        AuthorId: null,
-        Cons: null,
-        Description: '',
-        Evaluation: null,
-        Pros: null,
-        ROI: null,
-        Stage: '',
-        StageStatus: false,
-        TeamId: null,
-        Title: '',
-        id: '',
-        Comments: null,
-    }]);
+    const [allIdeas, setAllIdeas] = useState<[IdeaTypes]|null>();
     const ideasCollectionRef = collection(db, 'Ideas');
     useEffect(
         () => {

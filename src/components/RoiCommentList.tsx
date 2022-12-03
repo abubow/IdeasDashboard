@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { collection, doc, getDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { CommentSummaryTypes, IdeaTypes, ROICommentSummaryT, ROICommentT, UserDetailsTypes } from "../constants/types";
 import { useTheme } from "../contexts/themeContext";
+import { db } from "../firebase-config";
 import Comment from "./RoiComment";
 import CommentForm from "./RoiCommentForm";
 
@@ -49,66 +52,50 @@ const Button = styled.button<Props>`
 	transition: all 0.5s ease;
 `;
 
-const CommentsList = () => {
-	const allComments = [
-		{
-			id: 1,
-			username: "John Doe",
-			avatar: "https://i.pravatar.cc/150?img=1",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 2,
-			username: "Jane Doe",
-			avatar: "https://i.pravatar.cc/150?img=2",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 3,
-			username: "Jack Doe",
-			avatar: "https://i.pravatar.cc/150?img=3",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 4,
-			username: "Jill Doe",
-			avatar: "https://i.pravatar.cc/150?img=4",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 5,
-			username: "Jim Doe",
-			avatar: "https://i.pravatar.cc/150?img=5",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 6,
-			username: "Jenny Doe",
-			avatar: "https://i.pravatar.cc/150?img=6",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 7,
-			username: "Jax Doe",
-			avatar: "https://i.pravatar.cc/150?img=7",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-		{
-			id: 8,
-			username: "Jon Doe",
-			avatar: "https://i.pravatar.cc/150?img=8",
-			date: "1/1/2021",
-			body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
-		},
-	];
+interface interfaceProps {
+	ideaCommentsList: Array<string> | null;
+	idea: IdeaTypes;
+	ideaId: string;
+}
+
+const ROICommentsList = ({ ideaCommentsList, idea, ideaId }: interfaceProps) => {
+	const [allComments, setAllComments] = useState<ROICommentT[]|null>();
 	const [commentOpen, setCommentOpen] = useState(false);
+	const [loading, setLoading] = useState(true);
+	
+	const commentsCollectionRef = collection(db, "RoiComments");
+	const userDetailsCollectionRef = collection(db, "UserInfo");
+	useEffect(
+		() => {
+			const getComments = async () => {
+				setLoading(true);
+				const commentsArray: ROICommentT[] = [];
+				ideaCommentsList?.forEach(async (commentId) => {
+					const commentDoc = doc(commentsCollectionRef, commentId);
+					const commentData = await getDoc(commentDoc);
+					const comment= commentData.data() as ROICommentSummaryT;
+					// get user details from authorId
+					const userDetailsDoc = doc(userDetailsCollectionRef, comment.AuthorId);
+					const userDetailsData = await getDoc(userDetailsDoc);
+					const userDetails = userDetailsData.data() as UserDetailsTypes;
+					//console.table( userDetails ? userDetails : "undefined user" + comment.AuthorId);
+					const commentObj: ROICommentT = {
+						id: parseInt(commentId),
+						username: userDetails?.FirstName + " " + userDetails?.LastName,
+						avatar: userDetails?.pfpPath,
+						body: comment?.body,
+						// convert timestamp to date
+						date: comment?.PostDate.toDate().toDateString(),	
+						ROI: comment?.ROI,
+					};
+					commentsArray.push(commentObj);
+				});
+				setAllComments(commentsArray);
+				setLoading(false);
+			}
+			getComments();
+		}, []
+	);
     const {colorTheme} = useTheme();
 	return (
 		<Container>
@@ -125,11 +112,13 @@ const CommentsList = () => {
 					<CommentForm
 						colorTheme={colorTheme}
 						setCommentOpen={setCommentOpen}
+						idea={idea}
+						ideaId={ideaId}
 					/>
 				) : null}
-				{allComments.map((comment) => (
+				{allComments?.map((comment) => (
 					<Comment
-						key={comment.id}
+						key={comment?.id}
 						comment={comment}
 						colorTheme={colorTheme}
 					/>
@@ -139,4 +128,4 @@ const CommentsList = () => {
 	);
 };
 
-export default CommentsList;
+export default ROICommentsList;

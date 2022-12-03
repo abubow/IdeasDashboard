@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { db } from "../firebase-config";
-import { addDoc, collection, getDoc, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { IdeaSummaryTypes } from "../constants/types";
 import styled, { keyframes } from "styled-components";
 
@@ -54,6 +54,20 @@ export function AllIdeasSummariesProvider({ children }: Props) {
 	const addIdeaSummaryToDatabase = async (idea: IdeaSummaryTypes) => {
 		const ideaRef = await addDoc(ideasCollectionRef, idea);
 	};
+	const updateIdeaSummaryInDatabase = async (idea: IdeaSummaryTypes) => {
+		const ideaRef = doc(db, "IdeaSummary", idea.id);
+		const ideaDoc = await getDoc(ideaRef);
+		if (ideaDoc.exists()) {
+			await setDoc(ideaRef, idea);
+		}
+		const ideaOutlineRef = doc(db, "Ideas", idea.IdeaOutline);
+		const ideaOutlineDoc = await getDoc(ideaOutlineRef);
+		if (ideaOutlineDoc.exists()) {
+			await updateDoc(ideaOutlineRef, {
+				Stage: idea.Stage,
+			});
+		}
+	};
 	if (loading) {
 		return (
 			<div 
@@ -87,6 +101,7 @@ export function AllIdeasSummariesProvider({ children }: Props) {
 				allIdeaSummaries,
 				setAllIdeasSummaries,
 				addIdeaSummaryToDatabase,
+				updateIdeaSummaryInDatabase,
 			}}>
 			{children}
 		</AllIdeasSummariesContext.Provider>

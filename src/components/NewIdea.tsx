@@ -277,6 +277,7 @@ const NewIdea = ({ colorTheme }: Props) => {
 			TeamId: null,
 			AuthorId: authContext.user.uid,
 			Comments: null,
+			comments: null
 		};
 		setSubmitting(true);
 		const ideaRef = await ideaContext.addIdeaToDatabase(newIdea);

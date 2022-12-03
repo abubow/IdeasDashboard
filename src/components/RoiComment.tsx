@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { ROICommentT } from "../constants/types";
 
 interface Props {
     colorTheme: string;
@@ -76,13 +77,7 @@ const CommentContainer = styled.div<Props>`
     }
 `
 interface CommentProps extends Props {
-    comment: {
-        id: number;
-        username: string;
-        avatar: string;
-        date: string;
-        body: string;
-    }
+    comment: ROICommentT
 }
 const Comment = ({ colorTheme, comment }: CommentProps) => {
   return (
@@ -93,7 +88,8 @@ const Comment = ({ colorTheme, comment }: CommentProps) => {
           <p className="comment-username">{comment.username}</p>
         </div>
         <div className="comment-header-right">
-          <p className="comment-date">{comment.date}</p>
+          <p className="comment-date" >{comment.date}</p>
+          <p className="comment-date" style={{color:"red"}}>{comment.ROI}</p>
         </div>
       </div>
       <p className="comment-body">{comment.body}</p>

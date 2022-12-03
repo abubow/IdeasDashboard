@@ -25,7 +25,8 @@ const CommentsContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	align-items: flex-start;
+	align-items: center;
+	width: 100%;
 `;
 const ButtonCrate = styled.div`
 	display: flex;
@@ -77,8 +78,9 @@ const LoadingDots = styled.div`
 interface FProps extends Props {
 	ideaCommentsList: Array<string> | null;
 	idea: IdeaTypes;
+	ideaId: string;
 }
-const CommentsList = ({ colorTheme, ideaCommentsList, idea }: FProps) => {
+const CommentsList = ({ colorTheme, ideaCommentsList, idea, ideaId }: FProps) => {
 	const [allComments, setAllComments] = useState<CommentT[]|null>();
 	const [commentOpen, setCommentOpen] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -98,7 +100,7 @@ const CommentsList = ({ colorTheme, ideaCommentsList, idea }: FProps) => {
 					const userDetailsDoc = doc(userDetailsCollectionRef, comment.AuthorId);
 					const userDetailsData = await getDoc(userDetailsDoc);
 					const userDetails = userDetailsData.data() as UserDetailsTypes;
-					console.table( userDetails !== undefined ? userDetails : "undefined user" + comment.AuthorId);
+					//console.table( userDetails ? userDetails : "undefined user" + comment.AuthorId);
 					const commentObj: CommentT = {
 						id: parseInt(commentId),
 						username: userDetails?.FirstName + " " + userDetails?.LastName,
@@ -154,6 +156,7 @@ const CommentsList = ({ colorTheme, ideaCommentsList, idea }: FProps) => {
 						colorTheme={colorTheme}
 						setCommentOpen={setCommentOpen}
 						idea={idea}
+						ideaId={ideaId}
 					/>
 				) : null}
 				{allComments?.map((comment, index) => (

@@ -132,11 +132,13 @@ const Button = styled.button<Props>`
 interface CommentFormProps extends Props {
 	setCommentOpen: React.Dispatch<React.SetStateAction<boolean>>;
     idea: IdeaTypes;
+    ideaId: string;
 }
 const CommentForm = ({
 	colorTheme = "light",
 	setCommentOpen,
     idea,
+    ideaId,
 }: CommentFormProps) => {
     
     const { user, userDetails }:any = useUserAuth();
@@ -156,14 +158,20 @@ const CommentForm = ({
         const ret = await addDoc(commentsRef, commentPost);
         // updating the comments reference array in the idea
         const ideaRef = collection(db, 'Ideas');
-        const ideaDoc = doc(ideaRef, idea.id);
+        const ideaDoc = doc(ideaRef, ideaId);
         const newCommentsArray = [];
         newCommentsArray.push(ret.id);
-        idea.Comments?.forEach((commentId: string) => {
+        idea?.Comments?.forEach((commentId: string) => {
             newCommentsArray.push(commentId);
         });
+        idea?.comments?.forEach((commentId: string) => {
+            newCommentsArray.push(commentId);
+        });
+        for (let i = 0; i < newCommentsArray.length; i++) {
+            console.log(newCommentsArray[i]);
+        }
         await updateDoc(ideaDoc, {
-            comments: arrayUnion(...newCommentsArray),
+            Comments: arrayUnion(...newCommentsArray),
         });
         setCommentOpen(false);
     }

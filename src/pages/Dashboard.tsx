@@ -8,6 +8,8 @@ import { OptionsSelectedProvider } from '../contexts/optionsContext';
 import { AllIdeasProvider } from '../contexts/ideasContext';
 import { ColorContext, ThemeProvider } from '../contexts/themeContext';
 import { AllIdeasSummariesProvider } from '../contexts/allIdeaSumContext';
+import { DndProvider } from 'react-dnd/dist/core';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 interface Props {
     color: string;
@@ -47,6 +49,8 @@ const Dashboard = (props: PropsF) => {
 
     const { colorTheme, setColorTheme } = useContext(ColorContext);
     return (
+        
+		<DndProvider backend={HTML5Backend}>
         <ThemeProvider>
             <Container color={colorTheme === 'light' ? "#fff" : colors.backgroundColor}>
                 <Navbar color={colors.navbar} />
@@ -60,6 +64,7 @@ const Dashboard = (props: PropsF) => {
                 </OptionsSelectedProvider>
             </Container>
         </ThemeProvider>
+        </DndProvider>
     );
 }
 

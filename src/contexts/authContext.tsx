@@ -10,7 +10,8 @@ import {
 import { auth, db } from "../firebase-config";
 import styled, { keyframes } from "styled-components";
 import { UserDetailsTypes } from "../constants/types";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query} from "firebase/firestore"
+import {where} from "firebase/firestore";
 import { useTheme } from "./themeContext";
 export const userAuthContext = createContext({});
 
@@ -45,6 +46,7 @@ export function UserAuthProvider({ children }: Props) {
 	const [user, setUser] = useState({});
 	const [loading, setLoading] = useState(true);
 	const [userDetails, setUserDetails] = useState<UserDetailsTypes | null>(null);
+	const [userDetailsId, setUserDetailsId] = useState("");
 	const userInfoCollectionRef = collection(db, "UserInfo");
 	function logIn(email: string, password: string) {
 		return signInWithEmailAndPassword(auth, email, password);
@@ -61,6 +63,8 @@ export function UserAuthProvider({ children }: Props) {
 		const querySnapshot = await getDocs(queryA);
 		querySnapshot.forEach((doc) => {
 			setUserDetails(doc.data() as UserDetailsTypes);
+			setUserDetailsId(doc.id);
+			console.table(doc.data());
 		});
 		return userDetails;
 	}
@@ -90,7 +94,7 @@ export function UserAuthProvider({ children }: Props) {
 		);
 	}
 	return (
-		<userAuthContext.Provider value={{ signUp, logIn, logOut, user, userDetails }}>
+		<userAuthContext.Provider value={{ signUp, logIn, logOut, user, userDetails, userDetailsId }}>
 			{children}
 		</userAuthContext.Provider>
 	);

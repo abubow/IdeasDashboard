@@ -1,5 +1,15 @@
-import styled from "styled-components";
+import {
+	addDoc,
+	arrayUnion,
+	collection,
+	doc,
+	updateDoc,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
+import { IdeaTypes } from "../constants/types";
 import useUserAuth from "../contexts/authContext";
+import { db } from "../firebase-config";
 
 interface Props {
 	colorTheme: string;
@@ -102,6 +112,27 @@ const CommentContainer = styled.form<Props>`
                 text-decoration: none;
             }
     }
+    .comment-date {
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
+    }
+    .comment-score {
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
+        background: ${(props) =>
+            props.colorTheme === "light" ? "#fff" : "#000"};
+        padding: 0.5vh 0.5vw;
+        border-radius: 5px;
+        outline: none;
+        border: none;
+        cursor: pointer;
+        max-width: 2em;
+        &:focus {
+            outline: none;
+        }
+    }
 `;
 const ButtonCrate = styled.div`
 	display: flex;
@@ -124,60 +155,144 @@ const Button = styled.button<Props>`
 	opacity: 0.8;
 	transition: all 0.5s ease;
 `;
+const dotCarousel = keyframes`
+	0% {
+		box-shadow: 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff;
+	}
+	50% {
+		box-shadow: 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff, 9999px 0 0 1px #9880ff;
+	}
+	100% {
+		box-shadow: 9999px 0 0 1px #9880ff, 10014px 0 0 -1px #9880ff, 9984px 0 0 -1px #9880ff;
+	}
+`;
+const LoadingDots = styled.div`
+	position: relative;
+	left: -9999px;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #9880ff;
+	color: #9880ff;
+	box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff,
+		10014px 0 0 0 #9880ff;
+	animation: ${dotCarousel} 1.5s infinite linear;
+`;
 interface CommentFormProps extends Props {
 	setCommentOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	idea: IdeaTypes;
+	ideaId: string;
 }
 const CommentForm = ({
 	colorTheme = "light",
 	setCommentOpen,
+	idea,
+	ideaId,
 }: CommentFormProps) => {
-    
-    const { user }:any = useUserAuth();
+	const { user, userDetails, userDetailsId }: any = useUserAuth();
+	const [comment, setComment] = useState("");
+	const [roi, setRoi] = useState(0);
+
+	const [loading, setLoading] = useState(false);
+	const commentsRef = collection(db, "RoiComments");
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if (comment.length === 0) return;
+		if (roi > 10 || roi < 0) return;
+
+		if (idea == null) {
+			return;
+		}
+		const commentPost = {
+			body: comment,
+			PostDate: new Date(),
+			AuthorId: userDetailsId,
+			ROI: roi,
+		};
+		const ret = await addDoc(commentsRef, commentPost);
+		console.table(userDetails);
+		// updating the comments reference array in the idea
+		const ideaRef = collection(db, "Ideas");
+		const ideaDoc = doc(ideaRef, ideaId);
+		const newCommentsArray = [];
+		newCommentsArray.push(ret.id);
+		idea?.Comments?.forEach((commentId: string) => {
+			newCommentsArray.push(commentId);
+		});
+		idea?.comments?.forEach((commentId: string) => {
+			newCommentsArray.push(commentId);
+		});
+		for (let i = 0; i < newCommentsArray.length; i++) {
+			console.log(newCommentsArray[i]);
+		}
+		await updateDoc(ideaDoc, {
+			Comments: arrayUnion(...newCommentsArray),
+		});
+		setCommentOpen(false);
+	};
 	return (
-		<CommentContainer colorTheme={colorTheme}>
+		<CommentContainer
+			colorTheme={colorTheme}
+			onSubmit={handleSubmit}>
 			<div className="comment-header">
 				<div className="comment-header-left">
 					<img
 						className="comment-avatar"
-						src="https://i.imgur.com/0y0tj0x.jpg"
+						src={user?.photoURL}
 						alt="avatar"
 					/>
-					<p className="comment-username">
-                        {user?.displayName}
-                    </p>
+					<p className="comment-username">{user?.displayName}</p>
 				</div>
 				<div className="comment-header-right">
 					<p className="comment-date">
-                        {new Date().toLocaleDateString()}
-                    </p>
+						{new Date().toLocaleDateString()}
+					</p>
+					<input
+						type={"number"}
+						className="comment-score"
+						placeholder={"Score"}
+						max={10}
+						min={0}
+                        value={roi}
+                        onChange={(e) => setRoi(parseInt(e.target.value))}
+					/>
 				</div>
 			</div>
 			<div className="comment-body">
 				<textarea
 					className="comment-textarea"
-					placeholder="Write an ROI..."
+					placeholder="Write a comment..."
+					value={comment}
+					onChange={(e) => setComment(e.target.value)}
 				/>
 				<ButtonCrate>
 					<Button
 						type="submit"
 						colorTheme={colorTheme}>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={1.5}
-							stroke="currentColor"
-							style={{
-								width: "1.5vw",
-								height: "1.5vw",
-								color: colorTheme === "light" ? "#000" : "#fff",
-							}}>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
-							/>
-						</svg>
+						{loading ? (
+							<LoadingDots />
+						) : (
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								strokeWidth={1.5}
+								stroke="currentColor"
+								style={{
+									width: "1.5vw",
+									height: "1.5vw",
+									color:
+										colorTheme === "light"
+											? "#000"
+											: "#fff",
+								}}>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+								/>
+							</svg>
+						)}
 					</Button>
 					<Button
 						type="button"

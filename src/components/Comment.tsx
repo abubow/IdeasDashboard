@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styled from "styled-components"
 import { CommentT } from "../constants/types";
 

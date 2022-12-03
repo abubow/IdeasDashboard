@@ -54,7 +54,7 @@ const InProgress = ({ colorTheme }: Props) => {
 				{allIdeas
 					? allIdeas.allIdeaSummaries.filter(
 							(idea: IdeaSummaryTypes) => {
-								idea.Stage === "In Progress";
+								!idea.StageStatus;
 							}
 					  ).length
 					: 0}
@@ -63,7 +63,7 @@ const InProgress = ({ colorTheme }: Props) => {
 			<IdeaContainer>
 				{allIdeas.allIdeaSummaries?.map(
 					(idea: IdeaSummaryTypes, index: Key | null | undefined) => {
-						if (idea.Stage === "In Progress") {
+						if (!idea.StageStatus) {
 							return (
 								<Mini_Idea
 									colorTheme={colorTheme}

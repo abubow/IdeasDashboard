@@ -1,6 +1,7 @@
 import { User } from "firebase/auth";
 import styled from "styled-components";
-import CommentsList from "./RoiCommentList";
+import ROICommentsList from "./RoiCommentList";
+import { IdeaTypes } from "../constants/types";
 const Container = styled.div`
 	width: 100%;
 	height: 100%;
@@ -47,13 +48,19 @@ const Name = styled.h1`
 	font-weight: 400;
 `;
 interface ROIProps {
-	ROIarray: any[] | null;
+	ROIarray: Array<string> | null;
+	idea: IdeaTypes;
+	ideaId: string;
 }
-const ROI = ({ ROIarray }: ROIProps) => {
+const ROI = ({ ROIarray, idea, ideaId }: ROIProps) => {
 	return (
 		<Container>
 			<h2>ROI</h2>
-			<CommentsList />
+			<ROICommentsList
+				ideaCommentsList={ROIarray}
+				idea={idea}
+				ideaId={ideaId}
+			/>
 		</Container>
 	);
 };

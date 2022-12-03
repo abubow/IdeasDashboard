@@ -43,12 +43,12 @@ const Done = ({colorTheme}: Props) => {
     return (
         <Container colorTheme={colorTheme}>
             <Title colorTheme={colorTheme}>
-                Done ({allIdeas.allIdeaSummaries?.filter((idea: IdeaSummaryTypes) => idea.Stage === 'done').length})
+                Done ({allIdeas.allIdeaSummaries?.filter((idea: IdeaSummaryTypes) => idea.StageStatus).length})
             </Title>
             <IdeaContainer>
                 {
                     allIdeas.allIdeaSummaries?.map((idea : IdeaSummaryTypes , index: Key | null | undefined) => {
-                        if(idea.Stage === 'Done'){
+                        if(idea.StageStatus){
                           return (
                               <Mini_Idea colorTheme={colorTheme} idea={idea} key={index}/>
                           )

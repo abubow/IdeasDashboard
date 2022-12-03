@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IdeaTypes } from "../constants/types";
 import parse from "html-react-parser";
 import CommentsList from "./CommentsList";
@@ -102,8 +102,9 @@ const Li = styled.li<Props>`
 `;
 interface FProps extends Props {
 	idea: IdeaTypes;
+	ideaId: string;
 }
-const TabsC = ({ idea, colorTheme }: FProps) => {
+const TabsC = ({ idea, colorTheme, ideaId }: FProps) => {
 	const Tabs = [
 		{
 			id: "1",
@@ -127,7 +128,6 @@ const TabsC = ({ idea, colorTheme }: FProps) => {
 		},
 	];
 	const [tabSelected, setTabSelected] = useState(Tabs[0].id);
-
 	return (
 		<Container colorTheme={colorTheme}>
 			<TabIdentifierCrate>
@@ -186,9 +186,9 @@ const TabsC = ({ idea, colorTheme }: FProps) => {
 									: "No evaluation yet"}
 							</Description>
 					) : item.id === "3" ? (
-							<ROI ROIarray={idea.ROI} />
+							<ROI ROIarray={idea.ROI} idea={idea} ideaId={ideaId} />
 					) : (
-							<CommentsList colorTheme={colorTheme} ideaCommentsList={idea.Comments} idea={idea} />
+							<CommentsList colorTheme={colorTheme} ideaCommentsList={idea.Comments} idea={idea} ideaId={ideaId} />
 					)}
 				</TabContent>
 			))}

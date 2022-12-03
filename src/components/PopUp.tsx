@@ -178,6 +178,7 @@ const PopUp = ({ colorTheme, idea, setShowPopUp }: FPProps) => {
 						<TabsC
 							idea={ideaOutline}
 							colorTheme={colorTheme}
+							ideaId={idea.IdeaOutline}
 						/>
 					</IdeaForm>
 					<ButtonCrate>

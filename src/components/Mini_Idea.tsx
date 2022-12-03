@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { IdeaSummaryTypes } from "../constants/types";
 import IdeaPopUp from "./IdeaPopUp";
 import PopUp from "./PopUp";
+import { useDrag } from "react-dnd/dist/hooks";
 
 interface Props {
 	colorTheme: string;
@@ -91,16 +92,48 @@ const Mini_Idea = ({ colorTheme, idea }: FProps) => {
 		title: idea.Title,
 	});
 	const [showPopUp, setShowPopUp] = useState(false);
+	// using react-dnd useDrag hook to make the component draggable
+	const [{ isDragging }, drag] = useDrag({
+		item: { ...idea },
+		type: "idea",
+		collect: (monitor) => ({
+			isDragging: !!monitor.isDragging(),
+		}),
+		end: (item, monitor) => {
+			const didDrop = monitor.didDrop();
+			const droppedInto = monitor.getItem();
+			if (item && didDrop) {
+				console.log(droppedInto.Stage);
+			}
+			else if (item && !didDrop) {
+				console.log("dropped outside");
+			}
+			else if (!item) {
+				console.log("not dropped");
+			}
+		},
+	});
+
 	return (
 		<>
 			<Container
 				colorTheme={colorTheme}
 				draggable="true"
 				className={"dragable"}
+				ref={drag}
 				onClick={() => {
 					setShowPopUp(true);
+				}}
+				style={{
+					border: isDragging
+						? colorTheme === "light"
+							? "2px dashed rgba(28,29,34, 0.08)"
+							: "2px dashed rgba(255, 255, 255, 0.08)"
+						: colorTheme === "light"
+						? "2px solid rgba(28,29,34, 0.08)"
+						: "none",
 				}}>
-				<Crate>
+				<Crate style={{ opacity: isDragging ? 0 : 1 }}>
 					<StatusBall status={idea.StageStatus} />
 					<Title colorTheme={colorTheme}>{idea.Title}</Title>
 					<MetaContainer>
