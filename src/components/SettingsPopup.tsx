@@ -177,17 +177,17 @@ const ClickableSvg = styled.svg`
 	cursor: pointer;
 	border-radius: 50%;
 	background-color: rgba(0, 0, 0, 0.05);
-	padding: 0.5vh;
-	width: 2rem;
-	height: 2rem;
+	padding: 0.75vh;
+	min-width: 2rem;
+	min-height: 2rem;
 	transition: all 0.5s ease;
 	margin-left: 0.5vw;
 	&:hover {
 		background-color: rgba(0, 0, 0, 0.1);
 	}
 	@media (max-width: 768px) {
-		width: 1.8rem;
-		height: 1.8rem;
+		min-width: 1.8rem;
+		min-height: 1.8rem;
 	}
 `;
 
@@ -287,8 +287,8 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 				console.log("Uploaded a blob or file!");
 				//print the download url
 				getDownloadURL(imageRef).then((url) => {
-					console.log(url);
 					setImageUrl(url);
+					console.log(imageUrl);
 					//set the image url to the user
 					if (auth.currentUser) {
 						updateProfile(auth.currentUser, {
@@ -328,7 +328,7 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 						const docRef = doc(db, "UserInfo", doci.id.trim());
 						await updateDoc(docRef, {
 							Admin: userDetails?.Admin,
-							DefaultMode: userDetails?.DefaultMode,
+							DefaultMode: darkTheme ? "dark" : "light",
 							FirstName:
 								newFirstName !== ""
 									? newFirstName
@@ -337,6 +337,10 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 								newLastName !== ""
 									? newLastName
 									: doci.data().LastName,
+							pfpPath:
+								imageUrl !== ""
+									? imageUrl.trim()
+									: doci.data().pfpPath.trim(),
 							UserId: doci.data().UserId.trim(),
 						}).catch((err) => {
 							console.log(
@@ -354,6 +358,7 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 										imageUrl !== ""
 											? imageUrl.trim()
 											: doci.data().pfpPath.trim(),
+									ppfpPath: user.photoURL,
 									UserId: doci.data().UserId.trim(),
 									Amin: userDetails?.Admin,
 								},
@@ -404,7 +409,7 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 						/>
 						<ClickableSvg
 							width="16"
-							height="12"
+							height="16"
 							viewBox="0 0 16 12"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
@@ -417,7 +422,7 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 									colorTheme === "light"
 										? "rgba(255,255,255,0.9)"
 										: "rgba(0,0,0,0.8)",
-								color: colorTheme === "light" ? "#fff" : "#000",
+								color: colorTheme === "light" ? "#000" : "#fff",
 							}}
 							onClick={() =>
 								document.getElementById("file")?.click()
@@ -426,7 +431,9 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 								fillRule="evenodd"
 								clipRule="evenodd"
 								d="M1.14286 9.42858V4.28572C1.14286 3.83106 1.32347 3.39503 1.64496 3.07354C1.96645 2.75204 2.40249 2.57143 2.85715 2.57143H4.57143L6.35343 0.857147H9.71343L11.3591 2.57143H13.1429C13.5975 2.57143 14.0336 2.75204 14.355 3.07354C14.6765 3.39503 14.8571 3.83106 14.8571 4.28572V9.42858C14.8571 9.88323 14.6765 10.3193 14.355 10.6408C14.0336 10.9622 13.5975 11.1429 13.1429 11.1429H2.85715C2.40249 11.1429 1.96645 10.9622 1.64496 10.6408C1.32347 10.3193 1.14286 9.88323 1.14286 9.42858Z"
-								stroke="#1A1831"
+								stroke={
+									colorTheme !== "light" ? "#fff" : "#1A1831"
+								}
 								strokeWidth="0.5"
 								strokeLinecap="round"
 								strokeLinejoin="round"
@@ -435,8 +442,10 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 								fillRule="evenodd"
 								clipRule="evenodd"
 								d="M10.5714 6.85715C10.5714 6.17516 10.3005 5.52111 9.81828 5.03887C9.33604 4.55664 8.68199 4.28572 8 4.28572C7.31802 4.28572 6.66396 4.55664 6.18173 5.03887C5.69949 5.52111 5.42857 6.17516 5.42857 6.85715C5.42857 7.53913 5.69949 8.19319 6.18173 8.67542C6.66396 9.15766 7.31802 9.42858 8 9.42858C8.68199 9.42858 9.33604 9.15766 9.81828 8.67542C10.3005 8.19319 10.5714 7.53913 10.5714 6.85715Z"
-								stroke="#1A1831"
-								strokeWidth="0.5"
+								stroke={
+									colorTheme !== "light" ? "#fff" : "#1A1831"
+								}
+								strokeWidth="1"
 								strokeLinecap="round"
 								strokeLinejoin="round"
 							/>
@@ -458,6 +467,8 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 						<ClickableSvg
 							viewBox="0 0 12 12"
 							fill="none"
+							width="16"
+							height="16"
 							onClick={() => {
 								setEditing([
 									!editing[0],
@@ -465,11 +476,21 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 									editing[2],
 								]);
 							}}
+							style={{
+								zIndex: 1,
+								backgroundColor:
+									colorTheme === "light"
+										? "rgba(255,255,255,0.9)"
+										: "rgba(0,0,0,0.8)",
+								color: colorTheme === "light" ? "#000" : "#fff",
+							}}
 							xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M9.49771 3.2093L10.2059 3.91755M10.5599 1.43869C10.6994 1.57819 10.8101 1.74381 10.8856 1.92609C10.9611 2.10838 11 2.30375 11 2.50106C11 2.69837 10.9611 2.89374 10.8856 3.07603C10.8101 3.25831 10.6994 3.42393 10.5599 3.56343L3.83257 10.2918L1 11L1.70814 8.20668L8.43833 1.44153C8.7036 1.17492 9.05941 1.01783 9.43511 1.00143C9.81082 0.985026 10.179 1.11052 10.4664 1.35299L10.5599 1.43869Z"
-								stroke="#1A1831"
-								strokeWidth="0.5"
+								stroke={
+									colorTheme === "light" ? "#1A1831" : "#fff"
+								}
+								strokeWidth="1"
 								strokeLinecap="round"
 								strokeLinejoin="round"
 							/>
@@ -498,6 +519,8 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 							)}
 							<ClickableSvg
 								viewBox="0 0 12 12"
+								width="16"
+								height="16"
 								fill="none"
 								onClick={() => {
 									setEditing([
@@ -506,11 +529,26 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 										editing[2],
 									]);
 								}}
+								style={{
+									zIndex: 1,
+									backgroundColor:
+										colorTheme === "light"
+											? "rgba(255,255,255,0.9)"
+											: "rgba(0,0,0,0.8)",
+									color:
+										colorTheme === "light"
+											? "#000"
+											: "#fff",
+								}}
 								xmlns="http://www.w3.org/2000/svg">
 								<path
 									d="M9.49771 3.2093L10.2059 3.91755M10.5599 1.43869C10.6994 1.57819 10.8101 1.74381 10.8856 1.92609C10.9611 2.10838 11 2.30375 11 2.50106C11 2.69837 10.9611 2.89374 10.8856 3.07603C10.8101 3.25831 10.6994 3.42393 10.5599 3.56343L3.83257 10.2918L1 11L1.70814 8.20668L8.43833 1.44153C8.7036 1.17492 9.05941 1.01783 9.43511 1.00143C9.81082 0.985026 10.179 1.11052 10.4664 1.35299L10.5599 1.43869Z"
-									stroke="#1A1831"
-									strokeWidth="0.5"
+									stroke={
+										colorTheme === "light"
+											? "#1A1831"
+											: "#fff"
+									}
+									strokeWidth="1"
 									strokeLinecap="round"
 									strokeLinejoin="round"
 								/>
@@ -538,6 +576,8 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 							)}
 							<ClickableSvg
 								viewBox="0 0 12 12"
+								width="16"
+								height="16"
 								fill="none"
 								onClick={() => {
 									setEditing([
@@ -546,11 +586,26 @@ const SettingsPopup = ({ colorTheme, setSettingsOpen }: any) => {
 										!editing[2],
 									]);
 								}}
+								style={{
+									zIndex: 1,
+									backgroundColor:
+										colorTheme === "light"
+											? "rgba(255,255,255,0.9)"
+											: "rgba(0,0,0,0.8)",
+									color:
+										colorTheme === "light"
+											? "#000"
+											: "#fff",
+								}}
 								xmlns="http://www.w3.org/2000/svg">
 								<path
 									d="M9.49771 3.2093L10.2059 3.91755M10.5599 1.43869C10.6994 1.57819 10.8101 1.74381 10.8856 1.92609C10.9611 2.10838 11 2.30375 11 2.50106C11 2.69837 10.9611 2.89374 10.8856 3.07603C10.8101 3.25831 10.6994 3.42393 10.5599 3.56343L3.83257 10.2918L1 11L1.70814 8.20668L8.43833 1.44153C8.7036 1.17492 9.05941 1.01783 9.43511 1.00143C9.81082 0.985026 10.179 1.11052 10.4664 1.35299L10.5599 1.43869Z"
-									stroke="#1A1831"
-									strokeWidth="0.5"
+									stroke={
+										colorTheme === "light"
+											? "#1A1831"
+											: "#fff"
+									}
+									strokeWidth="1"
 									strokeLinecap="round"
 									strokeLinejoin="round"
 								/>

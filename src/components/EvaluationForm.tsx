@@ -17,7 +17,7 @@ import { db } from "../firebase-config";
 interface Props {
 	colorTheme: string;
 }
-const CommentContainer = styled.form<Props>`
+const EvaluationContainer = styled.form<Props>`
     background: ${(props) =>
 		props.colorTheme === "light"
 			? "rgba(28,29,34, 0.05)"
@@ -34,7 +34,7 @@ const CommentContainer = styled.form<Props>`
     @media (max-width: 768px) {
         width: 100%;
     }
-    .comment-header {
+    .evaluation-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -44,14 +44,14 @@ const CommentContainer = styled.form<Props>`
             align-items: flex-start;
             gap: 1vh;
         }
-        .comment-header-left {
+        .evaluation-header-left {
             display: flex;
             justify-content: flex-start;
             align-items: center;
             @media (max-width: 768px) {
                 gap: 1vw;
             }
-            .comment-avatar {
+            .evaluation-avatar {
                 width: 2.5vw;
                 height: 2.5vw;
                 border-radius: 50%;
@@ -61,7 +61,7 @@ const CommentContainer = styled.form<Props>`
                     height: 5vw;
                 }
             }
-            .comment-username {
+            .evaluation-username {
                 font-size: 0.8rem;
                 font-weight: 400;
                 color: ${(props) =>
@@ -72,12 +72,12 @@ const CommentContainer = styled.form<Props>`
                 }
             }
         }
-        .comment-header-right {
+        .evaluation-header-right {
             display: flex;
             justify-content: flex-start;
             align-items: center;
             gap: 0.5vw;
-            .comment-date {
+            .evaluation-date {
                 font-size: 0.8rem;
                 font-weight: 400;
                 color: ${(props) =>
@@ -85,13 +85,13 @@ const CommentContainer = styled.form<Props>`
             }
         }
     }
-    .comment-body {
+    .evaluation-body {
         margin-top: 0.5vh;
         font-size: 0.8rem;
         font-weight: 400;
         width: 100%;
         color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
-        .comment-textarea {
+        .evaluation-textarea {
             width: 100%;
             height: 5vh;
             border: none;
@@ -115,12 +115,12 @@ const CommentContainer = styled.form<Props>`
                 text-decoration: none;
             }
     }
-    .comment-date {
+    .evaluation-date {
         font-size: 0.8rem;
         font-weight: 400;
         color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
     }
-    .comment-score {
+    .evaluation-score {
         font-size: 0.8rem;
         font-weight: 400;
         color: ${(props) => (props.colorTheme === "light" ? "#000" : "#fff")};
@@ -181,27 +181,27 @@ const LoadingDots = styled.div`
 		10014px 0 0 0 #9880ff;
 	animation: ${dotCarousel} 1.5s infinite linear;
 `;
-interface CommentFormProps extends Props {
-	setCommentOpen: React.Dispatch<React.SetStateAction<boolean>>;
+interface EvaluationFormProps extends Props {
+	setEvaluationOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	idea: IdeaTypes;
 	ideaId: string;
 }
-const CommentForm = ({
+const EvaluationForm = ({
 	colorTheme = "light",
-	setCommentOpen,
+	setEvaluationOpen,
 	idea,
 	ideaId,
-}: CommentFormProps) => {
+}: EvaluationFormProps) => {
 	const { user, userDetails, userDetailsId }: any = useUserAuth();
-	const [comment, setComment] = useState("");
+	const [evaluation, setEvaluation] = useState("");
 	const [roi, setRoi] = useState(0);
 
 	const [loading, setLoading] = useState(false);
-	const commentsRef = collection(db, "RoiComments");
+	const evaluationsRef = collection(db, "RoiEvaluations");
     const userInfoRef = collection(db, 'UserInfo');
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (comment.length === 0) return;
+		if (evaluation.length === 0) return;
 		if (roi > 10 || roi < 0) return;
 
 		if (idea == null) {
@@ -209,50 +209,45 @@ const CommentForm = ({
 		}
         const queryI = query(userInfoRef, where('UserId', '==', user?.uid));
         const querySnapshot = await getDocs(queryI);
-		const commentPost = {
-			body: comment,
+		const evaluationPost = {
+			body: evaluation,
 			PostDate: new Date(),
 			AuthorId: querySnapshot.docs[0].id,
 			ROI: roi,
 		};
-		const ret = await addDoc(commentsRef, commentPost);
+		const ret = await addDoc(evaluationsRef, evaluationPost);
 		console.table(userDetails);
-		// updating the comments reference array in the idea
+		// updating the evaluations reference array in the idea
 		const ideaRef = collection(db, "Ideas");
 		const ideaDoc = doc(ideaRef, ideaId);	
-		let newCommentsArray = [];
-		newCommentsArray.push(ret.id);
-		idea?.Comments?.forEach((commentId: string) => {
-			newCommentsArray.push(commentId);
+		let newEvaluationsArray = [];
+		newEvaluationsArray.push(ret.id);
+		idea?.Evaluations?.forEach((evaluationId: string) => {
+			newEvaluationsArray.push(evaluationId);
 		});
-		for (let i = 0; i < newCommentsArray.length; i++) {
-			console.log(newCommentsArray[i]);
+		idea?.evaluations?.forEach((evaluationId: string) => {
+			newEvaluationsArray.push(evaluationId);
+		});
+		for (let i = 0; i < newEvaluationsArray.length; i++) {
+			console.log(newEvaluationsArray[i]);
 		}
 		await updateDoc(ideaDoc, {
-			ROI: arrayUnion(...newCommentsArray),
+			ROI: arrayUnion(...newEvaluationsArray),
 		});
-		setCommentOpen(false);
+		setEvaluationOpen(false);
 	};
 	return (
-		<CommentContainer
+		<EvaluationContainer
 			colorTheme={colorTheme}
 			onSubmit={handleSubmit}>
-			<div className="comment-header">
-				<div className="comment-header-left">
-					<img
-						className="comment-avatar"
-						src={user?.photoURL}
-						alt="avatar"
-					/>
-					<p className="comment-username">{user?.displayName}</p>
-				</div>
-				<div className="comment-header-right">
-					<p className="comment-date">
+			<div className="evaluation-header">
+				<div className="evaluation-header-right">
+					<p className="evaluation-date">
 						{new Date().toLocaleDateString()}
 					</p>
 					<input
 						type={"number"}
-						className="comment-score"
+						className="evaluation-score"
 						placeholder={"Score"}
 						max={10}
 						min={0}
@@ -261,12 +256,12 @@ const CommentForm = ({
 					/>
 				</div>
 			</div>
-			<div className="comment-body">
+			<div className="evaluation-body">
 				<textarea
-					className="comment-textarea"
-					placeholder="Write a comment..."
-					value={comment}
-					onChange={(e) => setComment(e.target.value)}
+					className="evaluation-textarea"
+					placeholder="Write a evaluation..."
+					value={evaluation}
+					onChange={(e) => setEvaluation(e.target.value)}
 				/>
 				<ButtonCrate>
 					<Button
@@ -300,13 +295,13 @@ const CommentForm = ({
 					<Button
 						type="button"
 						colorTheme={colorTheme}
-						onClick={() => setCommentOpen(false)}>
+						onClick={() => setEvaluationOpen(false)}>
 						Close
 					</Button>
 				</ButtonCrate>
 			</div>
-		</CommentContainer>
+		</EvaluationContainer>
 	);
 };
 
-export default CommentForm;
+export default EvaluationForm;

@@ -273,11 +273,10 @@ const NewIdea = ({ colorTheme }: Props) => {
 			Stage: "Thought",
 			StageStatus: false,
 			Evaluation: null,
-			ROI: null,
+			ROI: [],
 			TeamId: null,
 			AuthorId: authContext.user.uid,
-			Comments: null,
-			comments: null
+			Comments: [],
 		};
 		setSubmitting(true);
 		const ideaRef = await ideaContext.addIdeaToDatabase(newIdea);
@@ -285,7 +284,6 @@ const NewIdea = ({ colorTheme }: Props) => {
 			Title: title,
 			Stage: "Thought",
 			Comments:  0,
-			Attachments: 0,
 			IdeaOutline: ideaRef.id,
 			StageStatus: false,
 		};
@@ -330,14 +328,6 @@ const NewIdea = ({ colorTheme }: Props) => {
 						<InputLabel colorTheme={colorTheme}>
 							Description
 						</InputLabel>
-					</InputContainer>
-					<InputContainer>
-						<NewIdeaInput
-							colorTheme={colorTheme}
-							type="file"
-							accept="image/*"
-							style={{ padding: "1.5vh 1.5vw" }}
-						/>
 					</InputContainer>
 					<ProConContainer colorTheme={colorTheme}>
 						<Listing>

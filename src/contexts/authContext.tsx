@@ -64,7 +64,6 @@ export function UserAuthProvider({ children }: Props) {
 		querySnapshot.forEach((doc) => {
 			setUserDetails(doc.data() as UserDetailsTypes);
 			setUserDetailsId(doc.id);
-			console.table(doc.data());
 		});
 		return userDetails;
 	}

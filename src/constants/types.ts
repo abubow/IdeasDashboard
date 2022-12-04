@@ -1,10 +1,16 @@
 import { Timestamp } from "firebase/firestore";
 
+export interface EvaluationT {
+	Evaluation: string;
+	EvaluatorId: string;
+	Score: number;
+	TotalScore: number;
+}
 export interface newIdeaTypes {
 	AuthorId: string | null;
 	Cons: string[] | null;
 	Description: string;
-	Evaluation: any[] | null;
+	Evaluation: EvaluationT | null;
 	Pros: string[] | null;
 	ROI: any[] | null;
 	Stage: string;
@@ -12,12 +18,10 @@ export interface newIdeaTypes {
 	TeamId: string | null;
 	Title: string;
 	Comments: any[] | null;
-	comments: any[] | null;
 }
 export interface newIdeaSummaryTypes {
 	Title: string;
 	Comments: number | null;
-	Attachments:  number| null;
 	IdeaOutline: string;
 	StageStatus: boolean;
 	Stage: string;
@@ -44,7 +48,7 @@ export type CommentSummaryTypes = {
 	PostDate: Timestamp;
 	AuthorId: string;
 };
-export interface CommentT  {
+export interface CommentT {
 	id: number;
 	username: string;
 	avatar: string;

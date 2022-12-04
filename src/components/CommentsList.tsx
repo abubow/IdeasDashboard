@@ -100,7 +100,7 @@ const CommentsList = ({ colorTheme, ideaCommentsList, idea, ideaId }: FProps) =>
 					const userDetailsDoc = doc(userDetailsCollectionRef, comment.AuthorId);
 					const userDetailsData = await getDoc(userDetailsDoc);
 					const userDetails = userDetailsData.data() as UserDetailsTypes;
-					//console.table( userDetails ? userDetails : "undefined user" + comment.AuthorId);
+					console.table( userDetails ? userDetails : "undefined user" + comment.AuthorId);
 					const commentObj: CommentT = {
 						id: parseInt(commentId),
 						username: userDetails?.FirstName + " " + userDetails?.LastName,

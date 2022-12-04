@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import useUserAuth  from "../contexts/authContext";
+import useUserAuth from "../contexts/authContext";
+import { useNavbar } from "../contexts/navbarContext";
 import { useTheme } from "../contexts/themeContext";
 import SettingsPopup from "./SettingsPopup";
 
@@ -20,6 +21,12 @@ const Container = styled.div<Props>`
 	width: 4vw;
 	background-color: ${(props) => props.color};
 	z-index: 2;
+	transition: all 0.5s ease;
+	@media (max-width: 768px) {
+		width: 100vw;
+		flex-direction: row;
+		min-height: 5vh;
+	}
 `;
 const Icon = styled.div`
 	display: flex;
@@ -35,6 +42,10 @@ const Icon = styled.div`
 		background-color: rgba(255, 255, 255, 0.1);
 		opacity: 1;
 	}
+	@media (max-width: 768px) {
+		margin-bottom: 0;
+		margin-right: 1rem;
+	}
 `;
 const Logo = styled.div`
 	display: flex;
@@ -43,6 +54,9 @@ const Logo = styled.div`
 	width: 100%;
 	flex: 1;
 	margin: 2rem 0;
+	@media (max-width: 768px) {
+		margin: 0 2rem;
+	}
 `;
 const IconsCrate = styled.div`
 	display: flex;
@@ -51,6 +65,9 @@ const IconsCrate = styled.div`
 	flex-direction: column;
 	width: 100%;
 	flex: 10;
+	@media (max-width: 768px) {
+		flex-direction: row;
+	}
 `;
 const LogOutCrate = styled.div`
 	display: flex;
@@ -59,19 +76,26 @@ const LogOutCrate = styled.div`
 	width: 100%;
 	flex: 1;
 	flex-direction: column;
+	@media (max-width: 768px) {
+		flex-direction: row;
+	}
 `;
 const Navbar = ({ color }: Props) => {
-	const {logOut}:any = useUserAuth();
+	const { logOut, userDetails }: any = useUserAuth();
 	const navigate = useNavigate();
 	const [settings, setSettings] = useState(false);
-	const {colorTheme}:any = useTheme();
+	const { colorTheme }: any = useTheme();
+	const navbar: any = useNavbar();
 	const handleLogOut = () => {
 		logOut();
-		navigate('/');
-	}
+		navigate("/");
+	};
 	return (
 		<Container color={color}>
-			<Logo>
+			<Logo
+				onClick={() => {
+					navigate("/home");
+				}}>
 				<svg
 					width="24"
 					height="26"
@@ -89,7 +113,10 @@ const Navbar = ({ color }: Props) => {
 				</svg>
 			</Logo>
 			<IconsCrate>
-				<Icon>
+				<Icon
+					onClick={() => {
+						navbar.setNavbar("Ideas");
+					}}>
 					<svg
 						width="18"
 						height="20"
@@ -102,20 +129,25 @@ const Navbar = ({ color }: Props) => {
 						/>
 					</svg>
 				</Icon>
-				<Icon>
-					<svg
-						width="18"
-						height="18"
-						viewBox="0 0 18 18"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg">
-						<path
-							d="M0.75 2.58333C0.75 1.57081 1.57081 0.75 2.58333 0.75H6.25C7.26252 0.75 8.08333 1.57081 8.08333 2.58333V6.25C8.08333 7.26252 7.26252 8.08333 6.25 8.08333H2.58333C1.57081 8.08333 0.75 7.26252 0.75 6.25V2.58333ZM6.25 2.58333H2.58333V6.25H6.25V2.58333ZM9.91667 2.58333C9.91667 1.57081 10.7375 0.75 11.75 0.75H15.4167C16.4292 0.75 17.25 1.57081 17.25 2.58333V6.25C17.25 7.26252 16.4292 8.08333 15.4167 8.08333H11.75C10.7375 8.08333 9.91667 7.26252 9.91667 6.25V2.58333ZM15.4167 2.58333H11.75V6.25H15.4167V2.58333ZM0.75 11.75C0.75 10.7375 1.57081 9.91667 2.58333 9.91667H6.25C7.26252 9.91667 8.08333 10.7375 8.08333 11.75V15.4167C8.08333 16.4292 7.26252 17.25 6.25 17.25H2.58333C1.57081 17.25 0.75 16.4292 0.75 15.4167V11.75ZM6.25 11.75H2.58333V15.4167H6.25V11.75ZM9.91667 11.75C9.91667 10.7375 10.7375 9.91667 11.75 9.91667H15.4167C16.4292 9.91667 17.25 10.7375 17.25 11.75V15.4167C17.25 16.4292 16.4292 17.25 15.4167 17.25H11.75C10.7375 17.25 9.91667 16.4292 9.91667 15.4167V11.75ZM15.4167 11.75H11.75V15.4167H15.4167V11.75Z"
-							fill="white"
-						/>
-					</svg>
-				</Icon>
-				{/* <Icon>
+				{userDetails?.Admin && (
+					<Icon
+						onClick={() => {
+							navbar.setNavbar("Users");
+						}}>
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 18 18"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path
+								d="M0.75 2.58333C0.75 1.57081 1.57081 0.75 2.58333 0.75H6.25C7.26252 0.75 8.08333 1.57081 8.08333 2.58333V6.25C8.08333 7.26252 7.26252 8.08333 6.25 8.08333H2.58333C1.57081 8.08333 0.75 7.26252 0.75 6.25V2.58333ZM6.25 2.58333H2.58333V6.25H6.25V2.58333ZM9.91667 2.58333C9.91667 1.57081 10.7375 0.75 11.75 0.75H15.4167C16.4292 0.75 17.25 1.57081 17.25 2.58333V6.25C17.25 7.26252 16.4292 8.08333 15.4167 8.08333H11.75C10.7375 8.08333 9.91667 7.26252 9.91667 6.25V2.58333ZM15.4167 2.58333H11.75V6.25H15.4167V2.58333ZM0.75 11.75C0.75 10.7375 1.57081 9.91667 2.58333 9.91667H6.25C7.26252 9.91667 8.08333 10.7375 8.08333 11.75V15.4167C8.08333 16.4292 7.26252 17.25 6.25 17.25H2.58333C1.57081 17.25 0.75 16.4292 0.75 15.4167V11.75ZM6.25 11.75H2.58333V15.4167H6.25V11.75ZM9.91667 11.75C9.91667 10.7375 10.7375 9.91667 11.75 9.91667H15.4167C16.4292 9.91667 17.25 10.7375 17.25 11.75V15.4167C17.25 16.4292 16.4292 17.25 15.4167 17.25H11.75C10.7375 17.25 9.91667 16.4292 9.91667 15.4167V11.75ZM15.4167 11.75H11.75V15.4167H15.4167V11.75Z"
+								fill="white"
+							/>
+						</svg>
+					</Icon>
+				)}
+				{/*<Icon>
 					<svg
 						width="18"
 						height="19"
@@ -140,7 +172,7 @@ const Navbar = ({ color }: Props) => {
 							fill="white"
 						/>
 					</svg>
-				</Icon> */}
+				</Icon> 
 				<Icon>
 					<svg
 						width="20"
@@ -166,10 +198,10 @@ const Navbar = ({ color }: Props) => {
 							fill="white"
 						/>
 					</svg>
-				</Icon>
+				</Icon>*/}
 			</IconsCrate>
 			<LogOutCrate>
-				<Icon onClick={()=>setSettings(!settings)}>
+				<Icon onClick={() => setSettings(!settings)}>
 					<svg
 						width="16"
 						height="18"
@@ -202,11 +234,12 @@ const Navbar = ({ color }: Props) => {
 					</svg>
 				</Icon>
 			</LogOutCrate>
-			{
-				settings?
-				<SettingsPopup setSettingsOpen={setSettings} colorTheme={colorTheme}/>
-				:null
-			}
+			{settings ? (
+				<SettingsPopup
+					setSettingsOpen={setSettings}
+					colorTheme={colorTheme}
+				/>
+			) : null}
 		</Container>
 	);
 };

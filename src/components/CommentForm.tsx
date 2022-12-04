@@ -1,4 +1,4 @@
-import { addDoc, arrayUnion, collection, doc, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { useState } from "react";
 import styled from "styled-components";
 import { IdeaTypes } from "../constants/types";
@@ -145,15 +145,19 @@ const CommentForm = ({
     const [comment, setComment] = useState('');
 
     const commentsRef = collection(db, 'Comments');
+    const userInfoRef = collection(db, 'UserInfo');
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (idea==null){
             return;
         }
+        // getting userinfo For current user
+        const queryI = query(userInfoRef, where('UserId', '==', user?.uid));
+        const querySnapshot = await getDocs(queryI);
         const commentPost = {
             body: comment,
             PostDate: new Date(),
-            AuthorId: user.uid,
+            AuthorId: querySnapshot.docs[0].id,
         }
         const ret = await addDoc(commentsRef, commentPost);
         // updating the comments reference array in the idea
@@ -164,14 +168,19 @@ const CommentForm = ({
         idea?.Comments?.forEach((commentId: string) => {
             newCommentsArray.push(commentId);
         });
-        idea?.comments?.forEach((commentId: string) => {
-            newCommentsArray.push(commentId);
-        });
         for (let i = 0; i < newCommentsArray.length; i++) {
             console.log(newCommentsArray[i]);
         }
         await updateDoc(ideaDoc, {
             Comments: arrayUnion(...newCommentsArray),
+        });
+        // updating the comments reference number in the IdeaSummary
+        const ideaSummaryRef = collection(db, 'IdeaSummary');
+        const ideaQuery = query(ideaSummaryRef, where('IdeaOutline', '==', ideaId));
+        const ideaSummarySnapshot = await getDocs(ideaQuery);
+        const ideaSummaryDoc = doc(ideaSummaryRef, ideaSummarySnapshot.docs[0].id);
+        await updateDoc(ideaSummaryDoc, {
+            Comments: newCommentsArray.length,
         });
         setCommentOpen(false);
     }

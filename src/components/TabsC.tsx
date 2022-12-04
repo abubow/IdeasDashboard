@@ -4,6 +4,7 @@ import { IdeaTypes } from "../constants/types";
 import parse from "html-react-parser";
 import CommentsList from "./CommentsList";
 import ROI from "./ROI";
+import Evaluation from "./Evaluation";
 
 interface Props {
 	colorTheme: string;
@@ -52,11 +53,8 @@ const TabIdentifier = styled.button<TabProps>`
 	@media (max-width: 768px) {
 		width: 25vw;
 	}
-	@media (max-width: 425px) {
-		width: 35vw;
-	}
 	@media (max-width: 1024px) {
-		width: 10vw;
+		width: 20vw;
 	}
 `;
 const TabContent = styled.div<TabProps>`
@@ -122,10 +120,6 @@ const TabsC = ({ idea, colorTheme, ideaId }: FProps) => {
 			id: "4",
 			name: "Comments",
 		},
-		{
-			id: "5",
-			name: "Attachments",
-		},
 	];
 	const [tabSelected, setTabSelected] = useState(Tabs[0].id);
 	return (
@@ -173,18 +167,11 @@ const TabsC = ({ idea, colorTheme, ideaId }: FProps) => {
 							</Cons>
 						</>
 					) : item.id === "2" ? (
-							<Description colorTheme={colorTheme}>
-								{idea.Evaluation
-									? parse(
-											`
-										score: ${idea.Evaluation[0]}` +
-												"<br/>" +
-												`
-										${idea.Evaluation[1]}
-										`
-									  )
-									: "No evaluation yet"}
-							</Description>
+						(idea.Evaluation) ? (
+							<Evaluation evaluation={idea.Evaluation} />
+						) : (
+							<h2>No Evaluation</h2>
+						)
 					) : item.id === "3" ? (
 							<ROI ROIarray={idea.ROI} idea={idea} ideaId={ideaId} />
 					) : (

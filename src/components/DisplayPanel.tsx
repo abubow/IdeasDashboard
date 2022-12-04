@@ -126,7 +126,7 @@ const DisplayPanel = () => {
 						/>
 					) : null}
 				</TopBar>
-				{optionSelected === "Ideas" ? (
+				{optionSelected === "Ideas Timeline" ? (
 					<Timeline colorTheme={colorTheme} />
 				) : optionSelected == "Post New Idea" ? (
 					<NewIdea colorTheme={colorTheme} />

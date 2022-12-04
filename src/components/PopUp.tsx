@@ -13,7 +13,7 @@ const Container = styled.div`
 	min-width: 100vw;
 	min-height: 100vh;
 	background-color: rgba(0, 0, 0, 0.05);
-	backdrop-filter: blur(2px);
+	backdrop-filter: blur(20px);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -36,7 +36,7 @@ const Crate = styled.div<Props>`
 		props.colorTheme === "light"
 			? "rgba(255, 255, 255, 0.5)"
 			: "rgba(0, 0, 0, 0.5)"};
-	backdrop-filter: blur(25px);
+	backdrop-filter: blur(35px);
 	-webkit-backdrop-filter: blur(85px);
 	box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 	color: ${(props) => (props.colorTheme === "light" ? "black" : "white")};

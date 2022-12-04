@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 import useOptionSelected from "../contexts/optionsContext";
 import { useTheme } from "../contexts/themeContext";
@@ -31,7 +32,7 @@ const Heading = styled.h1`
 	font-weight: 700;
 	font-size: 30px;
 	width: 100%;
-	padding: 10% 0 0 8%;
+	padding: 10% 0 0 0;
 	margin-bottom: 0.5rem;
 `;
 const UnorderedList = styled.ul`
@@ -81,13 +82,15 @@ interface ToggleProps {
 const ToggleSwitch = styled.div<ToggleProps>`
 	width: 80%;
 	min-height: 4vh;
-	max-height: 5vh;
+	max-height: 15vh;
 	border-radius: 22px;
 	background-color: ${(props) =>
 		props.colorTheme === "light"
-			? "rgba(28, 29, 34, 0.1)"
+			? "rgba(28, 29, 34, 0.05)"
 			: "rgba(255, 255, 255, 0.05)"};
-	box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.1);
+	box-shadow: ${(props) =>
+		props.colorTheme === "light"
+			? "none" : "0 0 20px 10px rgba(0, 0, 0, 0.1)"};
 	padding: 2vh 1vw;
 	margin-bottom: 1rem;
 	display: flex;
@@ -96,7 +99,6 @@ const ToggleSwitch = styled.div<ToggleProps>`
 	transition: all 0.5s ease;
 `;
 const SwitchLabel = styled.label`
-	margin: 0 2vw;
 	transition: all 0.5s ease;
 	display: flex;
 	justify-content: center;
@@ -105,14 +107,14 @@ const SwitchLabel = styled.label`
 const SwitchBall = styled.div<ToggleProps>`
 	width: 7.5vw;
 	min-height: 3.8vh;
-	max-height: 4.5vh;
+	max-height: 5vh;
 	border-radius: 22px;
 	background-color: ${(props) =>
 		props.colorTheme === "light" ? "#fff" : "rgba(255, 255, 255, 0.05)"};
 	transition: all 0.5s ease;
 	padding: 1vh 1vw;
 	margin-left: ${(props) => (props.colorTheme === "light" ? "-2%" : "35%")};
-	box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.1);
+	box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.1);
 	position: absolute;
 	z-index: 0;
 `;
@@ -143,6 +145,11 @@ const Options = ({ content, color }: PropsF) => {
 			return found;
 		}
 	};
+	useEffect(
+		() => {
+			setOptionSelected(content.options[0].subOptions[0]);
+		},[]
+	)
 	return (
 		<Container
 			colorTheme={colorTheme}
@@ -156,7 +163,7 @@ const Options = ({ content, color }: PropsF) => {
 								<OptionLi
 									key={index}
 									onClick={() => {
-										setOptionSelected(option.name);
+										setOptionSelected(option.subOptions[0]);
 									}}
 									style={{
 										opacity:
@@ -259,6 +266,7 @@ const Options = ({ content, color }: PropsF) => {
 								: "rgba(255, 255, 255, 0.5)",
 						transition: "all 0.5s ease",
 						zIndex: 2,
+						marginLeft: "2vw",
 					}}>
 					<svg
 						width="18"
@@ -277,7 +285,6 @@ const Options = ({ content, color }: PropsF) => {
 					</svg>
 					<div
 						style={{
-							margin: "0 0.5vw",
 							fontSize: "0.8rem",
 							fontWeight: 500,
 							color:
@@ -296,6 +303,7 @@ const Options = ({ content, color }: PropsF) => {
 								: "rgba(255, 255, 255, 1)",
 						transition: "all 0.5s ease",
 						zIndex: 2,
+						marginRight: "2vw",
 					}}>
 					<svg
 						width="20"
@@ -314,7 +322,6 @@ const Options = ({ content, color }: PropsF) => {
 					</svg>
 					<div
 						style={{
-							margin: "0 0.5vw",
 							fontSize: "0.8rem",
 							fontWeight: 500,
 							color:

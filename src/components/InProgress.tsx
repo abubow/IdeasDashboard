@@ -34,6 +34,12 @@ const Title = styled.div<Props>`
 	padding-left: 1vw;
 	margin: 1vh 0 1vh 0.2vw;
 	align-self: flex-start;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 `;
 const IdeaContainer = styled.div`
 	display: flex;
