@@ -223,13 +223,14 @@ const EvaluationForm = ({
 		// updating the evaluations reference array in the idea
 		const ideaRef = collection(db, "Ideas");
 		const ideaDoc = doc(ideaRef, ideaId);	
-		const ideaData = await getDoc(ideaDoc;
+		const ideaData = await getDoc(ideaDoc)
 		const ideaEvaluations = ideaData.data()?.Evaluations;
 		if (ideaEvaluations == null) {
 
 		await updateDoc(ideaDoc, {
 			Evaluations: [ret.id],
 		});
+	}
 		setEvaluationOpen(false);
 	};
 	return (
@@ -241,7 +242,7 @@ const EvaluationForm = ({
 					<p className="evaluation-date">
 						{new Date().toLocaleDateString()}
 					</p>
-					<input
+					{/* <input
 						type={"number"}
 						className="evaluation-score"
 						placeholder={"Score"}
@@ -258,7 +259,7 @@ const EvaluationForm = ({
 						min={0}
                         value={roi}
                         onChange={(e) => setRoi(parseInt(e.target.value))}
-					/>
+					/> */}
 				</div>
 			</div>
 			<div className="evaluation-body">
