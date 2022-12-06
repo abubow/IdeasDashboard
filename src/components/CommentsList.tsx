@@ -1,4 +1,5 @@
 import { collection, doc, getDoc } from "firebase/firestore";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { CommentSummaryTypes, CommentT, IdeaTypes, UserDetailsTypes } from "../constants/types";
@@ -21,7 +22,7 @@ const Container = styled.div`
 	gap: 1vh;
 	overflow: auto;
 `;
-const CommentsContainer = styled.div`
+const CommentsContainer = styled(motion.div)`
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -140,7 +141,21 @@ const CommentsList = ({ colorTheme, ideaCommentsList, idea, ideaId }: FProps) =>
 			</div>
 	</div>
 	}
-
+	
+	const container = {
+		hidden: { opacity: 0 },
+		show: {
+			opacity: 1,
+			transition: {
+				delayChildren: 1.5,
+				staggerChildren: 0.5,
+			},
+		},
+	};
+	const item = {
+		hidden: { opacity: 0 },
+		show: { opacity: 1 },
+	};
 	return (
 		<Container>
 			<ButtonCrate>
@@ -150,7 +165,7 @@ const CommentsList = ({ colorTheme, ideaCommentsList, idea, ideaId }: FProps) =>
 					{commentOpen ? "Close" : "Create"}
 				</Button>
 			</ButtonCrate>
-			<CommentsContainer>
+			<CommentsContainer variants={container} initial="hidden" animate="show">
 				{commentOpen ? (
 					<CommentForm
 						colorTheme={colorTheme}
@@ -160,11 +175,13 @@ const CommentsList = ({ colorTheme, ideaCommentsList, idea, ideaId }: FProps) =>
 					/>
 				) : null}
 				{allComments?.map((comment, index) => (
+					<motion.div variants={item} key={index} style={{ width: "100%" }}>
 					<Comment
 						key={index}
 						comment={comment}
 						colorTheme={colorTheme}
 					/>
+					</motion.div>
 				))}
 			</CommentsContainer>
 		</Container>

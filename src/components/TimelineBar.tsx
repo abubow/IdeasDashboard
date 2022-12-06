@@ -3,10 +3,11 @@ import { IdeaSummaryTypes, IdeaTypes } from "../constants/types";
 import Mini_Idea from "./Mini_Idea";
 import { useDrop } from "react-dnd/dist/hooks/useDrop";
 import { useState } from "react";
+import { motion } from "framer-motion";
 interface Props {
 	colorTheme: string;
 }
-const Container = styled.div<Props>`
+const Container = styled(motion.div)<Props>`
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
@@ -34,12 +35,12 @@ const Title = styled.div<Props>`
 	margin: 1vh 0 1vh 0.2vw;
 	align-self: flex-start;
 `;
-const IdeaContainer = styled.div`
+const IdeaContainer = styled(motion.div)`
 	display: flex;
 	flex-direction: column;
 	border-radius: 10px;
 `;
-const EmptyContainer = styled.div<Props>`
+const EmptyContainer = styled(motion.div)<Props>`
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
@@ -59,7 +60,7 @@ interface FProps {
 	colorTheme: string;
 	title: string;
 	ideas: IdeaSummaryTypes[];
-    changePosition: (id: string, fromStage: string, toStage: string) => void;
+	changePosition: (id: string, fromStage: string, toStage: string) => void;
 }
 const TimelineBar = ({ colorTheme, title, ideas, changePosition }: FProps) => {
 	// using useDrop hook to handle drop event and check if it is hovering over the drop target
@@ -72,7 +73,7 @@ const TimelineBar = ({ colorTheme, title, ideas, changePosition }: FProps) => {
 		if (myIdeas.some((idea) => idea.id === item.id)) {
 			return;
 		}
-        changePosition(item.id, item.Stage, title);
+		changePosition(item.id, item.Stage, title);
 		// const newIdea: IdeaSummaryTypes = {
 		// 	id: item.id,
 		// 	Title: item.Title,
@@ -97,26 +98,44 @@ const TimelineBar = ({ colorTheme, title, ideas, changePosition }: FProps) => {
 			setIsHovering(true);
 		},
 	});
+	const container = {
+		hidden: { opacity: 0 },
+		show: {
+			opacity: 1,
+			transition: {
+				duration: 1.5,
+				staggerChildren: 0.8,
+				delayChildren: 0.5,
+			},
+		},
+	};
+	const item = {
+		hidden: { opacity: 0, y: -200 },
+		show: { opacity: 1, y: 0 },
+	};
+	
 	return (
 		<Container colorTheme={colorTheme}>
 			<Title colorTheme={colorTheme}>
 				{title} ({ideas.length})
 			</Title>
-			<IdeaContainer ref={drop}>
+			<IdeaContainer ref={drop} variants={container} initial="hidden" animate="show">
 				{myIdeas.map((idea, index) => {
 					return (
+						<motion.div key={index} variants={item} initial="hidden" animate="show" style={{width: "100%"}}>
 						<Mini_Idea
 							colorTheme={colorTheme}
 							idea={idea}
 							key={index}
 						/>
+						</motion.div>
 					);
 				})}
 				{myIdeas.length === 0 && (
-					<EmptyContainer colorTheme={colorTheme}/>
+					<EmptyContainer colorTheme={colorTheme} variants={item} initial="hidden" animate="show"/>
 				)}
 				{ishovering && isOver && (
-					<EmptyContainer colorTheme={colorTheme}>
+					<EmptyContainer colorTheme={colorTheme} variants={item} initial="hidden" animate="show">
 						drop here
 					</EmptyContainer>
 				)}

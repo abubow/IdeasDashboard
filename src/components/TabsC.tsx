@@ -167,11 +167,7 @@ const TabsC = ({ idea, colorTheme, ideaId }: FProps) => {
 							</Cons>
 						</>
 					) : item.id === "2" ? (
-						(idea.Evaluation) ? (
-							<Evaluation evaluation={idea.Evaluation} />
-						) : (
-							<h2>No Evaluation</h2>
-						)
+							<Evaluation evaluation={idea.Evaluation} ideaId={ideaId} idea={idea} />
 					) : item.id === "3" ? (
 							<ROI ROIarray={idea.ROI} idea={idea} ideaId={ideaId} />
 					) : (

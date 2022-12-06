@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Key } from "react";
 import styled from "styled-components";
 import { IdeaSummaryTypes } from "../constants/types";
@@ -35,7 +36,7 @@ const Title = styled.div<Props>`
 	margin: 1vh 0 1vh 0.2vw;
 	align-self: flex-start;
 `;
-const IdeaContainer = styled.div`
+const IdeaContainer = styled(motion.div)`
 	display: flex;
 	justify-content: flex-center;
 	align-items: center;
@@ -47,6 +48,20 @@ const IdeaContainer = styled.div`
 
 const InitialStage = ({ colorTheme }: Props) => {
 	const allIdeas: any = useAllIdeasSummaries();
+	const container = {
+		hidden: { opacity: 0 },
+		show: {
+			opacity: 1,
+			transition: {
+				duration: 1.5,
+				staggerChildren: 0.8,
+			},
+		},
+	};
+	const item = {
+		hidden: { opacity: 0, y: -200 },
+		show: { opacity: 1, y: 0 },
+	};
 	return (
 		<Container colorTheme={colorTheme}>
 			<Title colorTheme={colorTheme}>
@@ -61,7 +76,7 @@ const InitialStage = ({ colorTheme }: Props) => {
 					: 0}
 				)
 			</Title>
-			<IdeaContainer>
+			<IdeaContainer variants={container} initial="hidden" animate="show">
 				{allIdeas.allIdeaSummaries?.map(
 					(idea: IdeaSummaryTypes, index: Key | null | undefined) => {
 						if (
@@ -69,11 +84,13 @@ const InitialStage = ({ colorTheme }: Props) => {
 							idea.Stage === "Thought"
 						) {
 							return (
+								<motion.div variants={item} key={index} initial="hidden" animate="show" style={{height: '100%'}}>
 								<Mini_Idea
 									colorTheme={colorTheme}
 									idea={idea}
 									key={index}
 								/>
+								</motion.div>
 							);
 						}
 					}

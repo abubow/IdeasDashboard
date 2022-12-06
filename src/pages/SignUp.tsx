@@ -7,7 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import useUserAuth from "../contexts/authContext";
 import { updateProfile } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
-const Container = styled.div`
+import ProgressiveImage from "react-progressive-graceful-image";
+const Container = styled(motion.div)`
 	display: grid;
 	place-items: center;
 	min-height: 100vh;
@@ -18,7 +19,8 @@ const Crate = styled.div`
 	min-width: 80vw;
 	max-width: 85vw;
 	min-height: 85vh;
-	background-color: #1c1d22;
+	background-color: rgba(28, 29, 34, 0.9);
+	backdrop-filter: blur(30px);
 	border-radius: 12px;
 	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 	display: flex;
@@ -28,11 +30,21 @@ const Crate = styled.div`
 		flex-direction: column;
 		min-height: 70vh;
 	}
+	z-index: 11;
 `;
-const Image = styled.img`
+const BackDrop = styled(motion.div)`
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	backdrop-filter: blur(80px);
+	z-index: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+`;
+const Image = styled(motion.img)`
 	flex: 3;
 	max-width: 65%;
 	min-height: 100%;
+	width: 100%;
 	object-fit: cover;
 	@media (max-width: 768px) {
 		display: none;
@@ -52,11 +64,13 @@ const Form = styled.form`
 `;
 const Title = styled.h1`
 	font-size: 2.5rem;
-	font-weight: 500;
-	color: #fff;
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.85);
+	width: 100%;
+	text-align: left;
 	margin-bottom: 1rem;
 	min-width: 315px;
-	padding: 1rem 0;
+	padding: 1rem 1rem;
 	@media (max-width: 768px) {
 		min-width: 0;
 		padding: 0;
@@ -76,7 +90,7 @@ const Input = styled.input`
 	color: #fff;
 	::placeholder {
 		font-size: 1rem;
-		font-weight: 700;
+		font-weight: 500;
 		font-spacing: 0.1rem;
 		color: #fff;
 	}
@@ -109,14 +123,13 @@ const Button = styled(motion.button)`
 	}
 `;
 const BottomText = styled.p`
-	font-size: 1rem;
+	font-size: 0.85rem;
 	font-weight: 400;
-	color: #fff;
-	margin-top: 0.8rem;
-	opacity: 0.8;
+	color: rgba(255, 255, 255, 0.5);
+	margin-top: 2rem;
 `;
 const BottomLink = styled(Link)`
-	color: #fff;
+	color: rgba(255, 255, 255, 0.8);
 	font-weight: 500;
 	text-decoration: none;
 	&:hover {
@@ -211,7 +224,23 @@ const LogIn = () => {
 	};
 
 	return (
-		<Container>
+		<Container
+			animate={{
+				background: [
+					"linear-gradient(0deg, #292b31 0%, #1e1f23 100%)",
+					"linear-gradient(180deg, #292b31 0%, #1e1f23 100%)",
+					"linear-gradient(360deg, #292b31 0%, #1e1f23 100%)",
+				],
+			}}
+			transition={{
+				delay: 0.5,
+				duration: 8,
+				ease: "easeInOut",
+				repeat: Infinity,
+				repeatType: "reverse",
+				repeatDelay: 0,
+			}}>
+			<BackDrop />
 			<Crate>
 				<Form onSubmit={handleSubmit}>
 					<Title>Sign Up</Title>
@@ -257,11 +286,19 @@ const LogIn = () => {
 						<BottomLink to="/login">Log In</BottomLink>
 					</BottomText>
 				</Form>
-				<Image
+				<ProgressiveImage
 					src="https://i.ibb.co/wJpbGzW/johannes-plenio-fm-Tde1-Fe23-A-unsplash-1.jpg"
-					alt="ideas background"
-					loading="lazy"
-				/>
+					placeholder="https://i.ibb.co/BKFrkJK/johannes-plenio-fm-Tde1-Fe23-A-unsplash-1.jpg">
+					{(src: string, loading) => (
+						<Image
+							src={src}
+							alt="Login"
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							transition={{ duration: 0.8 }}
+						/>
+					)}
+				</ProgressiveImage>
 			</Crate>
 		</Container>
 	);

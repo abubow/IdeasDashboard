@@ -4,6 +4,7 @@ import { IdeaSummaryTypes } from "../constants/types";
 import IdeaPopUp from "./IdeaPopUp";
 import PopUp from "./PopUp";
 import { useDrag } from "react-dnd/dist/hooks";
+import { motion } from "framer-motion";
 
 interface Props {
 	colorTheme: string;
@@ -25,6 +26,7 @@ const Container = styled.div<Props>`
 	border-radius: 12px;
 	min-height: 15vh;
 	cursor: move;
+	min-height: 100%;
 `;
 const Crate = styled.div`
 	display: flex;
@@ -113,7 +115,6 @@ const Mini_Idea = ({ colorTheme, idea }: FProps) => {
 			}
 		},
 	});
-
 	return (
 		<>
 			<Container

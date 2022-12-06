@@ -21,6 +21,10 @@ const CommentContainer = styled.form<Props>`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+	font-size: 0.8rem;
+	font-weight: 400;
+	resize: none;
+	font-family: 'Exo 2', sans-serif;
     width: 100%;
     @media (max-width: 768px) {
         width: 100%;

@@ -71,6 +71,9 @@ const ROICommentsList = ({ ideaCommentsList, idea, ideaId }: interfaceProps) => 
 				setLoading(true);
 				const commentsArray: ROICommentT[] = [];
 				ideaCommentsList?.forEach(async (commentId) => {
+					if (commentId === "") {
+						return;
+					}
 					const commentDoc = doc(commentsCollectionRef, commentId);
 					const commentData = await getDoc(commentDoc);
 					const comment= commentData.data() as ROICommentSummaryT;

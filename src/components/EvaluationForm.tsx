@@ -3,6 +3,7 @@ import {
 	arrayUnion,
 	collection,
 	doc,
+	getDoc,
 	getDocs,
 	query,
 	updateDoc,
@@ -10,8 +11,9 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { IdeaTypes } from "../constants/types";
+import { EvaluationT, IdeaTypes } from "../constants/types";
 import useUserAuth from "../contexts/authContext";
+import { useTheme } from "../contexts/themeContext";
 import { db } from "../firebase-config";
 
 interface Props {
@@ -181,20 +183,21 @@ const LoadingDots = styled.div`
 		10014px 0 0 0 #9880ff;
 	animation: ${dotCarousel} 1.5s infinite linear;
 `;
-interface EvaluationFormProps extends Props {
+interface EvaluationFormProps {
 	setEvaluationOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	idea: IdeaTypes;
 	ideaId: string;
 }
 const EvaluationForm = ({
-	colorTheme = "light",
 	setEvaluationOpen,
 	idea,
 	ideaId,
 }: EvaluationFormProps) => {
 	const { user, userDetails, userDetailsId }: any = useUserAuth();
 	const [evaluation, setEvaluation] = useState("");
-	const [roi, setRoi] = useState(0);
+	const [score, setScore] = useState(0);
+	const [totalScore, setTotalScore] = useState(0);
+	const {colorTheme} = useTheme();
 
 	const [loading, setLoading] = useState(false);
 	const evaluationsRef = collection(db, "RoiEvaluations");
@@ -202,37 +205,30 @@ const EvaluationForm = ({
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (evaluation.length === 0) return;
-		if (roi > 10 || roi < 0) return;
+		if (score > totalScore || score < 0) return;
 
 		if (idea == null) {
 			return;
 		}
         const queryI = query(userInfoRef, where('UserId', '==', user?.uid));
         const querySnapshot = await getDocs(queryI);
-		const evaluationPost = {
-			body: evaluation,
-			PostDate: new Date(),
-			AuthorId: querySnapshot.docs[0].id,
-			ROI: roi,
+		const evaluationPost:EvaluationT = {
+			Evaluation: evaluation,	
+			EvaluatorId: querySnapshot.docs[0].id,
+			Score: score,
+			TotalScore: totalScore,
 		};
 		const ret = await addDoc(evaluationsRef, evaluationPost);
 		console.table(userDetails);
 		// updating the evaluations reference array in the idea
 		const ideaRef = collection(db, "Ideas");
 		const ideaDoc = doc(ideaRef, ideaId);	
-		let newEvaluationsArray = [];
-		newEvaluationsArray.push(ret.id);
-		idea?.Evaluations?.forEach((evaluationId: string) => {
-			newEvaluationsArray.push(evaluationId);
-		});
-		idea?.evaluations?.forEach((evaluationId: string) => {
-			newEvaluationsArray.push(evaluationId);
-		});
-		for (let i = 0; i < newEvaluationsArray.length; i++) {
-			console.log(newEvaluationsArray[i]);
-		}
+		const ideaData = await getDoc(ideaDoc;
+		const ideaEvaluations = ideaData.data()?.Evaluations;
+		if (ideaEvaluations == null) {
+
 		await updateDoc(ideaDoc, {
-			ROI: arrayUnion(...newEvaluationsArray),
+			Evaluations: [ret.id],
 		});
 		setEvaluationOpen(false);
 	};
@@ -245,6 +241,15 @@ const EvaluationForm = ({
 					<p className="evaluation-date">
 						{new Date().toLocaleDateString()}
 					</p>
+					<input
+						type={"number"}
+						className="evaluation-score"
+						placeholder={"Score"}
+						max={10}
+						min={0}
+                        value={roi}
+                        onChange={(e) => setRoi(parseInt(e.target.value))}
+					/>
 					<input
 						type={"number"}
 						className="evaluation-score"
